@@ -4,6 +4,7 @@ globals [
   score
   highScore
   movementSpeed
+  mouseUse?
 ]
 
 breed [players player]
@@ -24,6 +25,7 @@ to setup
   set alive? true
   set score 0
   set movementSpeed 1
+  set mouseUse? false
 
   create-players 1 [
     set shape "circle"
@@ -44,6 +46,9 @@ to setup
 end
 
 to spawn
+  if mouse-down? [
+    set mouseUse? true
+  ]
   ; game end
   if alive? = false [
     ask turtles [die]
@@ -63,9 +68,18 @@ to spawn
       ; creation of bomb
       genBomb
     ]
+
   ]
 
   every .03 [
+
+    ; player movement
+    if mouseUse? [
+      ask players [
+        set heading towardsxy mouse-xcor mouse-ycor
+        fd 0.3
+      ]
+    ]
 
     ; bullet/bomb movement
     moveBullets
@@ -220,6 +234,8 @@ to bombActivate
 
       ]
       [
+      ifelse (timer / 2) < 16
+      [
         create-ordered-bullets (timer / 2) [
           setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
         ]
@@ -227,7 +243,16 @@ to bombActivate
         ask bombs [
           die
         ]
+      ]
+      [
+         create-ordered-bullets 16 [
+          setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
+        ]
 
+        ask bombs [
+          die
+        ]
+      ]
       ]
     ]
 end
