@@ -77,7 +77,7 @@ to spawn
     if mouseUse? [
       ask players [
         set heading towardsxy mouse-xcor mouse-ycor
-        fd 0.3
+        fd movementSpeed / 4
       ]
     ]
 
@@ -211,7 +211,7 @@ to checkPowerup
           set pcolor black
         ]
 
-        set movementSpeed (movementSpeed + 0.2)
+        set movementSpeed (movementSpeed * 1.1)
       ]
     ]
   ]
