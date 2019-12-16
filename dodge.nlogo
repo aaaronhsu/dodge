@@ -4,7 +4,6 @@ globals [
   score
   highScore
   movementSpeed
-  mouseUse?
 ]
 
 breed [players player]
@@ -26,7 +25,6 @@ to setup
   set alive? true
   set score 0
   set movementSpeed 1
-  set mouseUse? false
 
   create-players 1 [
     set shape "circle"
@@ -46,7 +44,7 @@ to setup
 
 end
 
-to spawn
+to play
   if mouse-down? [
     set mouseUse? true
   ]
@@ -188,7 +186,7 @@ to moveBullets
   ask bullets [
     fd (1 / difficulty * (sqrt(sqrt(timer))) / 2)
   ]
-  ask bullets with [xcor >= 16 or xcor <= -16 or ycor >= 16 or ycor <= -16] [
+  ask bullets with [xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor] [
     set score (score + 1)
     die
   ]
@@ -198,7 +196,7 @@ to moveBombs
   ask bombs [
     fd (1 / difficulty * (sqrt(sqrt(timer))) / 2)
   ]
-  ask bombs with [xcor > 16 or xcor < -16 or ycor > 16 or ycor < -16] [
+  ask bombs with [xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor] [
     die
     set score (score + 1)
   ]
@@ -273,8 +271,8 @@ end
 GRAPHICS-WINDOW
 223
 11
-660
-449
+661
+450
 -1
 -1
 13.0
@@ -326,9 +324,9 @@ NIL
 
 BUTTON
 64
-189
+203
 127
-222
+236
 up
 moveUp
 NIL
@@ -343,9 +341,9 @@ NIL
 
 BUTTON
 64
-221
+235
 127
-254
+268
 down
 moveDown
 NIL
@@ -360,9 +358,9 @@ NIL
 
 BUTTON
 127
-221
+235
 190
-254
+268
 right
 moveRight
 NIL
@@ -377,9 +375,9 @@ NIL
 
 BUTTON
 0
-221
+235
 63
-254
+268
 left
 moveLeft
 NIL
@@ -398,7 +396,7 @@ BUTTON
 170
 138
 NIL
-spawn
+play
 T
 1
 T
@@ -430,6 +428,17 @@ highScore
 17
 1
 11
+
+SWITCH
+63
+154
+181
+187
+mouseUse?
+mouseUse?
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
