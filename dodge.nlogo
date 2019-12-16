@@ -8,6 +8,7 @@ globals [
 ]
 
 breed [players player]
+breed [arrows arrow]
 breed [bullets bullet]
 breed [bombs bomb]
 
