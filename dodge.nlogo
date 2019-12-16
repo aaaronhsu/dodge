@@ -146,9 +146,15 @@ end
 to genBullet
   create-bullets 1 [
     set size 2
-    ifelse random 2 = 0
-    [setxy 16 ((random 32) - 16)]
-    [setxy ((random 32) - 16) 16]
+    ifelse random 4 = 0
+    [setxy max-pxcor ((random (2 * max-pycor)) - max-pycor)]
+    [ifelse random 3 = 0
+      [setxy min-pxcor (((random 2 * max-pycor)) - max-pycor)]
+      [ifelse random 2 = 0
+        [setxy (((random 2 * max-pxcor)) - max-pxcor) max-pycor]
+        [setxy (((random 2 * max-pxcor)) - max-pxcor) min-pycor]
+      ]
+    ]
 
     set heading towards player 0
   ]
@@ -159,9 +165,15 @@ to genBomb
       create-bombs 1 [
         set size 3
         set shape "bomb"
-        ifelse random 2 = 0
-        [setxy 16 ((random 32) - 16)]
-        [setxy ((random 32) - 16) 16]
+      ifelse random 4 = 0
+      [setxy max-pxcor ((random (2 * max-pycor)) - max-pycor)]
+      [ifelse random 3 = 0
+        [setxy min-pxcor (((random 2 * max-pycor)) - max-pycor)]
+        [ifelse random 2 = 0
+          [setxy (((random 2 * max-pxcor)) - max-pxcor) max-pycor]
+          [setxy (((random 2 * max-pxcor)) - max-pxcor) min-pycor]
+        ]
+      ]
 
         set heading towards player 0
       ]
