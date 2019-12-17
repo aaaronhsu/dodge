@@ -6,6 +6,7 @@ globals [
   movementSpeed
 ]
 
+
 breed [players player]
 breed [arrows arrow]
 breed [bullets bullet]
@@ -291,8 +292,8 @@ end
 GRAPHICS-WINDOW
 223
 11
-661
-450
+660
+449
 -1
 -1
 13.0
