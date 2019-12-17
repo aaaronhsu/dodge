@@ -11,6 +11,21 @@ breed [arrows arrow]
 breed [bullets bullet]
 breed [bombs bomb]
 
+players-own [
+  playerMS
+]
+
+bullets-own [
+  bulletMS
+]
+
+arrows-own [
+  arrowMS
+]
+bombs-own [
+  bombMS
+]
+
 to-report points
   ifelse alive?
   [report score]
@@ -144,6 +159,7 @@ end
 ; creation of bullet/bomb
 to genBullet
   create-bullets 1 [
+    set bulletMS sqrt(timer) / 10 * difficulty
     set size 2
     ifelse random 4 = 0
     [setxy max-pxcor ((random (2 * max-pycor)) - max-pycor)]
@@ -161,9 +177,10 @@ end
 
 to genBomb
   if random 3 < 1 and count bombs < 1 [
-      create-bombs 1 [
-        set size 3
-        set shape "bomb"
+    create-bombs 1 [
+      set bombMS sqrt(timer) / 10 * difficulty
+      set size 3
+      set shape "bomb"
       ifelse random 4 = 0
       [setxy max-pxcor ((random (2 * max-pycor)) - max-pycor)]
       [ifelse random 3 = 0
@@ -184,7 +201,7 @@ end
 ; movement of bullet/bomb
 to moveBullets
   ask bullets [
-    fd (1 / difficulty * (sqrt(sqrt(timer))) / 2)
+    fd bulletMS
   ]
   ask bullets with [xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor] [
     set score (score + 1)
@@ -194,7 +211,7 @@ end
 
 to moveBombs
   ask bombs [
-    fd (1 / difficulty * (sqrt(sqrt(timer))) / 2)
+    fd bombMS
   ]
   ask bombs with [xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor] [
     die
@@ -237,6 +254,7 @@ to bombActivate
       [
         create-ordered-bullets 6 [
           setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
+        set bulletMS sqrt(timer) / 10 * difficulty
         ]
 
         ask bombs [
@@ -245,10 +263,11 @@ to bombActivate
 
       ]
       [
-      ifelse (timer / 2) < 16
+      ifelse (timer / 2) < 10
       [
         create-ordered-bullets (timer / 2) [
           setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
+          set bulletMS sqrt(sqrt(timer)) / 10 * difficulty
         ]
 
         ask bombs [
@@ -256,8 +275,9 @@ to bombActivate
         ]
       ]
       [
-         create-ordered-bullets 16 [
+         create-ordered-bullets 10 [
           setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
+          set bulletMS sqrt(sqrt(timer)) / 10 * difficulty
         ]
 
         ask bombs [
