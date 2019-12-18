@@ -248,42 +248,42 @@ end
 to bombActivate
   if random 25 < 1 and count bombs > 0 [
 
-      ifelse (timer / 2) < 6
+    ifelse (score) < 10
+    [
+      create-ordered-bullets 4 [
+        setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
+        set bulletMS sqrt(sqrt(score)) / (difficulty * 2)
+      ]
+
+      ask bombs [
+        die
+      ]
+
+    ]
+    [
+      ifelse score < 20
       [
         create-ordered-bullets 6 [
           setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
-        set bulletMS sqrt(timer) / 10 * difficulty
+          set bulletMS sqrt(sqrt(score)) / (difficulty * 2)
         ]
 
         ask bombs [
           die
         ]
-
       ]
       [
-      ifelse (timer / 2) < 10
-      [
-        create-ordered-bullets (timer / 2) [
+        create-ordered-bullets 8 [
           setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
-          set bulletMS sqrt(sqrt(timer)) / 10 * difficulty
+          set bulletMS sqrt(sqrt(score)) / (difficulty * 2)
         ]
 
         ask bombs [
           die
         ]
-      ]
-      [
-         create-ordered-bullets 10 [
-          setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
-          set bulletMS sqrt(sqrt(timer)) / 10 * difficulty
-        ]
-
-        ask bombs [
-          die
-        ]
-      ]
       ]
     ]
+  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
