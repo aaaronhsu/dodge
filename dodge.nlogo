@@ -4,6 +4,7 @@ globals [
   score
   highScore
   movementSpeed
+  money
 ]
 
 breed [players player]
@@ -32,9 +33,13 @@ to-report points
   [report 0]
 end
 
+to-report wallet
+  report money
+end
+
 to setup
-  ca
-  ask turtles [die]
+  clear-turtles
+
   set alive? true
   set score 0
   set movementSpeed 1
@@ -117,6 +122,7 @@ to checkDeath
   ask players [
       if count neighbors with [count turtles-here > 0] > 0 [
         set alive? false
+      set money (money + score)
       ]
     ]
 end
@@ -457,6 +463,17 @@ mouseUse?
 0
 1
 -1000
+
+MONITOR
+66
+420
+123
+465
+Money
+wallet
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
