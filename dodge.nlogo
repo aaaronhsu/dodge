@@ -35,7 +35,6 @@ end
 to setup
   ca
   ask turtles [die]
-  reset-timer
   set alive? true
   set score 0
   set movementSpeed 1
@@ -158,7 +157,7 @@ end
 ; creation of bullet/bomb
 to genBullet
   create-bullets 1 [
-    set bulletMS sqrt(timer) / 10 * difficulty
+    set bombMS sqrt(sqrt(score)) / difficulty * 2
     set size 2
     ifelse random 4 = 0
     [setxy max-pxcor ((random (2 * max-pycor)) - max-pycor)]
@@ -177,7 +176,7 @@ end
 to genBomb
   if random 3 < 1 and count bombs < 1 [
     create-bombs 1 [
-      set bombMS sqrt(timer) / 10 * difficulty
+      set bombMS sqrt(sqrt(score)) / difficulty * 2
       set size 3
       set shape "bomb"
       ifelse random 4 = 0
