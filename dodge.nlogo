@@ -34,7 +34,6 @@ end
 
 to setup
   ca
-
   ask turtles [die]
   reset-timer
   set alive? true
@@ -202,24 +201,24 @@ end
 to moveBullets
   ask bullets [
     fd bulletMS
-  ]
-  ask bullets with [xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor] [
-    set score (score + 1)
-    die
+    killEntities
   ]
 end
 
 to moveBombs
   ask bombs [
     fd bombMS
+    killEntities
   ]
-  ask bombs with [xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor] [
+
+end
+
+to killEntities
+  if xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
     die
     set score (score + 1)
   ]
 end
-
-
 
 to createPowerup
   if count patches with [pcolor = green] = 0 [
@@ -291,8 +290,8 @@ end
 GRAPHICS-WINDOW
 223
 11
-661
-450
+660
+449
 -1
 -1
 13.0
