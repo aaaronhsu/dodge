@@ -6,7 +6,6 @@ globals [
   movementSpeed
 ]
 
-
 breed [players player]
 breed [arrows arrow]
 breed [bullets bullet]
