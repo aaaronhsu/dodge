@@ -157,7 +157,7 @@ end
 ; creation of bullet/bomb
 to genBullet
   create-bullets 1 [
-    set bombMS sqrt(sqrt(score)) / difficulty * 2
+    set bulletMS sqrt(sqrt(score)) / (difficulty * 2)
     set size 2
     ifelse random 4 = 0
     [setxy max-pxcor ((random (2 * max-pycor)) - max-pycor)]
@@ -176,7 +176,7 @@ end
 to genBomb
   if random 3 < 1 and count bombs < 1 [
     create-bombs 1 [
-      set bombMS sqrt(sqrt(score)) / difficulty * 2
+      set bombMS sqrt(sqrt(score)) / (difficulty * 2)
       set size 3
       set shape "bomb"
       ifelse random 4 = 0
