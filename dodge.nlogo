@@ -215,8 +215,8 @@ end
 
 to killEntities
   if xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
-    die
     set score (score + 1)
+    die
   ]
 end
 
