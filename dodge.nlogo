@@ -11,6 +11,7 @@ breed [players player]
 breed [arrows arrow]
 breed [bullets bullet]
 breed [bombs bomb]
+breed [shields shield]
 
 players-own [
   playerMS
@@ -105,6 +106,8 @@ to play
     ; powerup creation
     createPowerup
     checkPowerup
+    ; shielding
+
 
 
     ; bomb explosion
@@ -249,6 +252,31 @@ to checkPowerup
   ]
 end
 
+to createShield
+  if count patches with [pcolor = blue] = 0 [
+    if random 100 < 1 [ask one-of patches [set pcolor blue]]
+    ]
+end
+
+to checkShield
+  if count patches with [pcolor = blue] = 1 [
+    if players-on patch with [pcolor = blue] = 1 [
+      create-shield 1 [
+        set color blue
+        set size 1
+        set shape "circle"
+      ]
+      ask shield 0 [
+        setxy (([xcor] of player 0) - 1) ([ycor] of player 0)
+        if alive? = true [
+          loop [
+            repeat 36 [fd 1 rt 10]
+          ]
+        ]
+      ]
+    ]
+  ]
+end
 
 ; activate bomb (4% of the time per tick)
 to bombActivate
