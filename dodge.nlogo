@@ -40,7 +40,6 @@ end
 
 to setup
   clear-turtles
-  clear-patches
 
   set alive? true
   set score 0
@@ -65,9 +64,6 @@ to setup
 end
 
 to play
-  ask patch 15 13 [set plabel word "Score: "  score]
-  ask patch 15 15 [set plabel word "Highscore: " highScore]
-  ask patch -8 15 [set plabel word "Money: " money]
   if mouse-down? [
     set mouseUse? true
   ]
@@ -111,7 +107,8 @@ to play
     createPowerup
     checkPowerup
     ; shielding
-
+;    createShield
+;    checkShield
 
 
     ; bomb explosion
@@ -129,6 +126,7 @@ to checkDeath
   ask players [
       if count neighbors with [count turtles-here > 0] > 0 [
         set alive? false
+      set money (money + score)
       ]
     ]
 end
@@ -227,7 +225,6 @@ end
 to killEntities
   if xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
     set score (score + 1)
-    set money (money + 1)
     die
   ]
 end
@@ -258,14 +255,19 @@ end
 
 to createShield
   if count patches with [pcolor = blue] = 0 [
-    if random 100 < 1 [ask one-of patches [set pcolor blue]]
+    if random 100 < 1 [
+      ask one-of patches [
+        set pcolor blue
+      ]
     ]
+  ]
 end
 
 to checkShield
-  if count patches with [pcolor = blue] = 1 [
-    if players-on patches with [pcolor = blue] = 1 [
-      create-shield 1 [
+  ask patches with [pcolor = blue] [
+    ask neighbors [if count players-here > 0 [
+      ask patches with [pcolor = blue] [set pcolor black]
+      create-shields 1 [
         set color blue
         set size 1
         set shape "circle"
@@ -277,7 +279,6 @@ to checkShield
             repeat 36 [fd 1 rt 10]
           ]
         ]
-      ]
     ]
   ]
 end
@@ -333,7 +334,7 @@ GRAPHICS-WINDOW
 -1
 13.0
 1
-20
+10
 1
 1
 1
