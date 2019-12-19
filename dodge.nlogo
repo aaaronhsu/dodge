@@ -260,7 +260,7 @@ end
 
 to checkShield
   if count patches with [pcolor = blue] = 1 [
-    if players-on patch with [pcolor = blue] = 1 [
+    if players-on patches with [pcolor = blue] = 1 [
       create-shield 1 [
         set color blue
         set size 1
