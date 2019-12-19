@@ -1,13 +1,9 @@
 TODO:
 
-fix that bullets don't die after exiting screen
+implement more powerups (teleportation, slow down speed, clear screen, shield)
 
-fix highscore variable
+implement shop
 
-change speed of bullets/bombs based on current points
+implement turret enemy
 
-fix that bombs give too many points
-
-give bullets and bombs their own speed variable
-
-implement more powerups (teleportation, slow down speed, clear screen)
+implement shapes
