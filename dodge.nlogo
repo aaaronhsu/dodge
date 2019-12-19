@@ -39,6 +39,7 @@ end
 
 to setup
   clear-turtles
+  clear-patches
 
   set alive? true
   set score 0
@@ -63,6 +64,9 @@ to setup
 end
 
 to play
+  ask patch 15 13 [set plabel word "Score: "  score]
+  ask patch 15 15 [set plabel word "Highscore: " highScore]
+  ask patch -8 15 [set plabel word "Money: " money]
   if mouse-down? [
     set mouseUse? true
   ]
@@ -122,7 +126,6 @@ to checkDeath
   ask players [
       if count neighbors with [count turtles-here > 0] > 0 [
         set alive? false
-      set money (money + score)
       ]
     ]
 end
@@ -221,6 +224,7 @@ end
 to killEntities
   if xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
     set score (score + 1)
+    set money (money + 1)
     die
   ]
 end
@@ -301,7 +305,7 @@ GRAPHICS-WINDOW
 -1
 13.0
 1
-10
+20
 1
 1
 1
