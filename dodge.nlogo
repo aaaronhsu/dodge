@@ -5,6 +5,8 @@ globals [
   highScore
   movementSpeed
   money
+  slowdowns
+  speedDecrease
 ]
 
 breed [players player]
@@ -38,12 +40,18 @@ to-report wallet
   report money
 end
 
+to-report slowdownsLeft
+  report slowDowns
+end
+
 to setup
   clear-turtles
 
   set alive? true
   set score 0
   set movementSpeed 1
+  set speedDecrease 1
+  set slowDowns 0
 
   create-players 1 [
     set shape "circle"
@@ -64,6 +72,10 @@ to setup
 end
 
 to play
+  ask patch 15 13 [set plabel word "Score: "  score]
+  ask patch 15 15 [set plabel word "Highscore: " highScore]
+  ask patch -8 15 [set plabel word "Money: " money]
+
   if mouse-down? [
     set mouseUse? true
   ]
@@ -107,8 +119,11 @@ to play
     createPowerup
     checkPowerup
     ; shielding
-;    createShield
-;    checkShield
+    ;    createShield
+    ;    checkShield
+
+    createItem
+    checkItem
 
 
     ; bomb explosion
@@ -124,11 +139,10 @@ end
 ; checks if game is over
 to checkDeath
   ask players [
-      if count neighbors with [count turtles-here > 0] > 0 [
-        set alive? false
-      set money (money + score)
-      ]
+    if count neighbors with [count turtles-here > 0] > 0 [
+      set alive? false
     ]
+  ]
 end
 
 
@@ -199,8 +213,8 @@ to genBomb
         ]
       ]
 
-        set heading towards player 0
-      ]
+      set heading towards player 0
+    ]
   ]
 end
 
@@ -209,14 +223,14 @@ end
 ; movement of bullet/bomb
 to moveBullets
   ask bullets [
-    fd bulletMS
+    fd bulletMS * speedDecrease
     killEntities
   ]
 end
 
 to moveBombs
   ask bombs [
-    fd bombMS
+    fd bombMS * speedDecrease
     killEntities
   ]
 
@@ -225,15 +239,16 @@ end
 to killEntities
   if xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
     set score (score + 1)
+    set money (money + 1)
     die
   ]
 end
 
 to createPowerup
   if count patches with [pcolor = green] = 0 [
-   if random 100 < 1 [
-     ask one-of patches [
-       set pcolor green
+    if random 100 < 1 [
+      ask one-of patches [
+        set pcolor green
       ]
     ]
   ]
@@ -253,35 +268,66 @@ to checkPowerup
   ]
 end
 
-to createShield
-  if count patches with [pcolor = blue] = 0 [
+to createItem
+  if count patches with [pcolor = orange] = 0 [
     if random 100 < 1 [
       ask one-of patches [
-        set pcolor blue
+        set pcolor orange
       ]
     ]
   ]
 end
 
-to checkShield
-  ask patches with [pcolor = blue] [
-    ask neighbors [if count players-here > 0 [
-      ask patches with [pcolor = blue] [set pcolor black]
-      create-shields 1 [
-        set color blue
-        set size 1
-        set shape "circle"
-      ]
-      ask shield 0 [
-        setxy (([xcor] of player 0) - 1) ([ycor] of player 0)
-        if alive? = true [
-          loop [
-            repeat 36 [fd 1 rt 10]
-          ]
+to checkItem
+  ask patches with [pcolor = orange] [
+    ask neighbors [
+      if count players-here > 0 [
+        ask patches with [pcolor = orange] [
+          set pcolor black
         ]
+
+        set slowdowns (slowdowns + 1)
+      ]
     ]
   ]
 end
+
+to useItem
+  if slowdowns > 0 [
+    set slowdowns (slowdowns - 1)
+    set speedDecrease (speedDecrease * 0.5)
+  ]
+end
+
+;to createShield
+;  if count patches with [pcolor = blue] = 0 [
+;    if random 100 < 1 [
+;      ask one-of patches [
+;        set pcolor blue
+;      ]
+;    ]
+;  ]
+;end
+;
+;to checkShield
+;  ask patches with [pcolor = blue] [
+;    ask neighbors [if count players-here > 0 [
+;      ask patches with [pcolor = blue] [set pcolor black]
+;      create-shields 1 [
+;        set color blue
+;        set size 1
+;        set shape "circle"
+;      ]
+;      ask shield 0 [
+;        setxy (([xcor] of player 0) - 1) ([ycor] of player 0)
+;        if alive? = true [
+;          loop [
+;            repeat 36 [fd 1 rt 10]
+;          ]
+;        ]
+;    ]
+;  ]
+;end
 
 ; activate bomb (4% of the time per tick)
 to bombActivate
@@ -334,7 +380,7 @@ GRAPHICS-WINDOW
 -1
 13.0
 1
-10
+24
 1
 1
 1
@@ -464,28 +510,6 @@ NIL
 NIL
 1
 
-MONITOR
-55
-290
-136
-335
-NIL
-points
-17
-1
-11
-
-MONITOR
-61
-348
-128
-393
-NIL
-highScore
-17
-1
-11
-
 SWITCH
 63
 154
@@ -497,13 +521,47 @@ mouseUse?
 1
 -1000
 
+BUTTON
+92
+283
+198
+316
+NIL
+useItem\n
+NIL
+1
+T
+OBSERVER
+NIL
+R
+NIL
+NIL
+1
+
+BUTTON
+13
+283
+76
+316
+NIL
+ca
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
 MONITOR
-66
-420
-123
-465
-Money
-wallet
+63
+348
+137
+393
+NIL
+slowDowns
 17
 1
 11
