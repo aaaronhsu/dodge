@@ -189,6 +189,7 @@ end
 ; creation of bullet/bomb
 to genBullet
   create-bullets 1 [
+    set shape "fish"
     set bulletMS sqrt(sqrt(score)) / (difficulty * 2)
     set size 2
     ifelse random 4 = 0
@@ -325,6 +326,7 @@ to bombActivate
       create-ordered-bullets 4 [
         setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
         set bulletMS sqrt(sqrt(score)) / (difficulty * 2)
+        set shape "fish"
       ]
 
       ask bombs [
@@ -338,6 +340,7 @@ to bombActivate
         create-ordered-bullets 6 [
           setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
           set bulletMS sqrt(sqrt(score)) / (difficulty * 2)
+          set shape "fish"
         ]
 
         ask bombs [
@@ -348,6 +351,7 @@ to bombActivate
         create-ordered-bullets 8 [
           setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
           set bulletMS sqrt(sqrt(score)) / (difficulty * 2)
+          set shape "fish"
         ]
 
         ask bombs [
@@ -628,12 +632,18 @@ Polygon -7500403 true true 150 0 0 150 105 150 105 293 195 293 195 150 300 150
 bomb
 true
 0
-Circle -2674135 true false 3 24 260
+Circle -2674135 true false 41 92 214
 Polygon -955883 true false 101 127 101 127 74 84
-Line -16777216 false 74 108 57 184
-Line -16777216 false 68 113 111 124
-Line -16777216 false 106 124 97 157
-Polygon -16777216 true false 98 158 98 158 63 155 97 197 53 181
+Line -16777216 false 74 138 57 214
+Line -16777216 false 68 143 111 154
+Line -16777216 false 106 154 97 187
+Polygon -16777216 true false 98 188 98 188 63 185 97 227 53 211
+Rectangle -2674135 true false 120 75 180 105
+Rectangle -6459832 true false 120 60 135 75
+Rectangle -6459832 true false 105 45 120 60
+Line -1184463 false 105 30 105 45
+Line -1184463 false 90 30 105 45
+Line -1184463 false 90 45 105 45
 
 box
 false
@@ -734,7 +744,7 @@ false
 Polygon -1 true false 44 131 21 87 15 86 0 120 15 150 0 180 13 214 20 212 45 166
 Polygon -1 true false 135 195 119 235 95 218 76 210 46 204 60 165
 Polygon -1 true false 75 45 83 77 71 103 86 114 166 78 135 60
-Polygon -7500403 true true 30 136 151 77 226 81 280 119 292 146 292 160 287 170 270 195 195 210 151 212 30 166
+Polygon -11221820 true false 30 136 151 77 226 81 280 119 292 146 292 160 287 170 270 195 195 210 151 212 30 166
 Circle -16777216 true false 215 106 30
 
 flag
