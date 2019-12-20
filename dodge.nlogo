@@ -7,7 +7,6 @@ globals [
   money
   slowdowns
   speedDecrease
-  afawfsdf
 ]
 
 breed [players player]
