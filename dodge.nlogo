@@ -7,6 +7,7 @@ globals [
   money
   slowdowns
   speedDecrease
+  ABcontact ; if arrows and bombs are neighbors
 ]
 
 breed [players player]
@@ -24,6 +25,7 @@ bullets-own [
 
 arrows-own [
   arrowMS
+  contact
 ]
 bombs-own [
   bombMS
@@ -114,6 +116,7 @@ to play
     ; bullet/bomb movement
     moveBullets
     moveBombs
+    moveArrows
 
     ; powerup creation
     createPowerup
@@ -136,7 +139,7 @@ end
 ; checks if game is over
 to checkDeath
   ask players [
-    if count neighbors with [count turtles-here > 0] > 0 [
+    if count neighbors with [count bullets-here > 0 or count bombs-here > 0] > 0 [
       set alive? false
     ]
   ]
@@ -173,7 +176,18 @@ to moveDown
   ]
 end
 
-
+; creation of arrows
+to genArrow
+  create-arrows 1 [
+    set size 1
+    if alive? = true [
+      set heading [heading] of one-of players
+      setxy ([xcor] of one-of players) ([ycor] of one-of players)
+      set contact false
+    ]
+    set arrowMS (sqrt(sqrt(score))) / (difficulty * 2)
+  ]
+end
 
 ; creation of bullet/bomb
 to genBullet
@@ -234,10 +248,34 @@ to moveBombs
 
 end
 
+; movement of arrows
+to moveArrows
+  ask arrows [
+    fd arrowMS * speedDecrease
+    killEntities
+    if count bullets-on neighbors > 0 [
+      ask bullets-on neighbors [
+        set score (score + 1)
+        set money (money + 1)
+        die]
+    ]
+    if count bombs-on neighbors > 0 [
+      set ABcontact true
+      set contact true
+    ]
+  ]
+  if ABcontact = true [
+    bombActivate
+    ask arrows with [contact = true] [die] ; HALP IDK WHY THIS DON'T WORK
+  ]
+end
+
 to killEntities
   if xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
-    set score (score + 1)
-    set money (money + 1)
+    ask bombs [set score (score + 1)
+      set money (money + 1)]
+    ask bullets [set score (score + 1)
+      set money (money + 1)]
     die
   ]
 end
@@ -297,8 +335,6 @@ to useItem
   ]
 end
 
-
-
 ; activate bomb (4% of the time per tick)
 to bombActivate
   if random 25 < 1 and count bombs > 0 [
@@ -342,9 +378,6 @@ to bombActivate
       ]
     ]
   ]
-end
-
-to test
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -541,6 +574,23 @@ slowDowns
 17
 1
 11
+
+BUTTON
+141
+324
+204
+357
+shoot
+genArrow
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
