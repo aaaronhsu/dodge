@@ -371,9 +371,6 @@ to bombActivate
     ]
   ]
 end
-
-to test
-end
 @#$#@#$#@
 GRAPHICS-WINDOW
 223
