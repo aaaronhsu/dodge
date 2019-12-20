@@ -114,6 +114,7 @@ to play
     ; bullet/bomb movement
     moveBullets
     moveBombs
+    moveArrows
 
     ; powerup creation
     createPowerup
@@ -136,7 +137,7 @@ end
 ; checks if game is over
 to checkDeath
   ask players [
-    if count neighbors with [count turtles-here > 0] > 0 [
+    if count neighbors with [count bullets-here > 0 or count bombs-here > 0] > 0 [
       set alive? false
     ]
   ]
@@ -173,7 +174,17 @@ to moveDown
   ]
 end
 
-
+; creation of arrows
+to genArrow
+  create-arrows 1 [
+    set size 1
+    if alive? = true [
+      set heading [heading] of one-of players
+      setxy ([xcor] of one-of players) ([ycor] of one-of players)
+    ]
+    set arrowMS (sqrt(sqrt(sqrt(score))) / (difficulty * 2))
+  ]
+end
 
 ; creation of bullet/bomb
 to genBullet
@@ -231,6 +242,15 @@ to moveBombs
     killEntities
   ]
 
+end
+
+; movement of arrows
+to moveArrows
+  ask arrows [
+    fd arrowMS * speedDecrease
+    killEntities
+    if xcor = min-pxcor or xcor = max-pxcor or ycor = min-pycor or ycor = max-pycor [die]
+  ]
 end
 
 to killEntities
@@ -295,8 +315,6 @@ to useItem
     set speedDecrease (speedDecrease * 0.8)
   ]
 end
-
-
 
 ; activate bomb (4% of the time per tick)
 to bombActivate
@@ -537,6 +555,23 @@ slowDowns
 17
 1
 11
+
+BUTTON
+141
+324
+204
+357
+shoot
+genArrow
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

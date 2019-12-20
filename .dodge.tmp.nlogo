@@ -13,7 +13,6 @@ breed [players player]
 breed [arrows arrow]
 breed [bullets bullet]
 breed [bombs bomb]
-breed [shields shield]
 
 players-own [
   playerMS
@@ -115,13 +114,11 @@ to play
     ; bullet/bomb movement
     moveBullets
     moveBombs
+    moveArrows
 
     ; powerup creation
     createPowerup
     checkPowerup
-    ; shielding
-    ;    createShield
-    ;    checkShield
 
     createItem
     checkItem
@@ -140,7 +137,7 @@ end
 ; checks if game is over
 to checkDeath
   ask players [
-    if count neighbors with [count turtles-here > 0] > 0 [
+    if count neighbors with [count bullets-here > 0 or count bombs-here > 0] > 0 [
       set alive? false
     ]
   ]
@@ -177,7 +174,18 @@ to moveDown
   ]
 end
 
+; creation of arrows
+to genArrow
+  create-arrows 1 [
+    set size 1
+    if alive? = true [
+      set heading [heading] of one-of players
+      setxy ([xcor] of one-of players) ([ycor] of one-of players)
+    ]
+    set arrowMS (sqrt(score) / (difficulty * 2))
 
+  ]
+end
 
 ; creation of bullet/bomb
 to genBullet
@@ -237,8 +245,17 @@ to moveBombs
 
 end
 
+; movement of arrows
+to moveArrows
+  ask arrows [
+    fd arrowMS * speedDecrease
+    killEntities
+    if xcor = min-pxcor or xcor = max-pxcor or ycor = min-pycor or ycor = max-pycor [die]
+  ]
+end
+
 to killEntities
-  if xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
+  aif xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
     set score (score + 1)
     set money (money + 1)
     die
@@ -300,36 +317,6 @@ to useItem
   ]
 end
 
-;to createShield
-;  if count patches with [pcolor = blue] = 0 [
-;    if random 100 < 1 [
-;      ask one-of patches [
-;        set pcolor blue
-;      ]
-;    ]
-;  ]
-;end
-;
-;to checkShield
-;  ask patches with [pcolor = blue] [
-;    ask neighbors [if count players-here > 0 [
-;      ask patches with [pcolor = blue] [set pcolor black]
-;      create-shields 1 [
-;        set color blue
-;        set size 1
-;        set shape "circle"
-;      ]
-;      ask shield 0 [
-;        setxy (([xcor] of player 0) - 1) ([ycor] of player 0)
-;        if alive? = true [
-;          loop [
-;            repeat 36 [fd 1 rt 10]
-;          ]
-;        ]
-;    ]
-;  ]
-;end
-
 ; activate bomb (4% of the time per tick)
 to bombActivate
   if random 25 < 1 and count bombs > 0 [
@@ -370,6 +357,9 @@ to bombActivate
       ]
     ]
   ]
+end
+
+to test
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -566,6 +556,23 @@ slowDowns
 17
 1
 11
+
+BUTTON
+141
+324
+204
+357
+shoot
+genArrow
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
