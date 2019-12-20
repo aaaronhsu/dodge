@@ -7,6 +7,7 @@ globals [
   money
   slowdowns
   speedDecrease
+  ABcontact ; if arrows and bombs are neighbors
 ]
 
 breed [players player]
@@ -24,6 +25,7 @@ bullets-own [
 
 arrows-own [
   arrowMS
+  contact
 ]
 bombs-own [
   bombMS
@@ -181,8 +183,9 @@ to genArrow
     if alive? = true [
       set heading [heading] of one-of players
       setxy ([xcor] of one-of players) ([ycor] of one-of players)
+      set contact false
     ]
-    set arrowMS (sqrt(sqrt(sqrt(score))) / (difficulty * 2))
+    set arrowMS (sqrt(sqrt(score))) / (difficulty * 2)
   ]
 end
 
@@ -250,14 +253,29 @@ to moveArrows
   ask arrows [
     fd arrowMS * speedDecrease
     killEntities
-    if xcor = min-pxcor or xcor = max-pxcor or ycor = min-pycor or ycor = max-pycor [die]
+    if count bullets-on neighbors > 0 [
+      ask bullets-on neighbors [
+        set score (score + 1)
+        set money (money + 1)
+        die]
+    ]
+    if count bombs-on neighbors > 0 [
+      set ABcontact true
+      set contact true
+    ]
+  ]
+  if ABcontact = true [
+    bombActivate
+    ask arrows with [contact = true] [die] ; HALP IDK WHY THIS DON'T WORK
   ]
 end
 
 to killEntities
   if xcor >= max-pxcor or xcor <= min-pxcor or ycor >= max-pycor or ycor <= min-pycor [
-    set score (score + 1)
-    set money (money + 1)
+    ask bombs [set score (score + 1)
+      set money (money + 1)]
+    ask bullets [set score (score + 1)
+      set money (money + 1)]
     die
   ]
 end
@@ -360,9 +378,6 @@ to bombActivate
       ]
     ]
   ]
-end
-
-to test
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
