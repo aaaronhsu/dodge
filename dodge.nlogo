@@ -258,7 +258,9 @@ to moveArrows
       ask bullets-on neighbors [
         set score (score + 1)
         set money (money + 1)
-        die]
+        die
+      ]
+      die
     ]
     if count bombs-on neighbors > 0 [
       set contact true
