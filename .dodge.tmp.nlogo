@@ -261,8 +261,9 @@ to moveArrows
         die]
     ]
     if count bombs-on neighbors > 0 [
+
+      set contact trueset ABcontact true
       set contact true
-      set ABcontact true
     ]
   ]
   if ABcontact = true [
