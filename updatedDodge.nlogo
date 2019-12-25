@@ -50,6 +50,7 @@ to setup
   set alive? true
   set score 0
   set items 0
+  set numArrows 0
   set bulletSpeed 1
   set spawnRate 1.5
   set playerSpeed .2
@@ -74,6 +75,7 @@ to play
     ]
     set score 0
     set items 0
+    set numArrows 0
   ]
 
 
