@@ -8,6 +8,7 @@ globals [
   arrowSpeed
   spawnRate
   items
+  numArrows
 ]
 
 breed [players player]
@@ -36,6 +37,10 @@ arrows-own [
 
 to-report rItems
   report items
+end
+
+to-report rArrows
+  report numArrows
 end
 
 to setup
@@ -108,6 +113,13 @@ to play
       ask arrows [
         set arrowSpeed playerSpeed * 2
         fd arrowSpeed
+      ]
+    ]
+
+    ; gives arrows to player
+    every 3 [
+      if numArrows < 10 [
+        set numArrows (numArrows + 1)
       ]
     ]
 
@@ -199,19 +211,22 @@ end
 
 to genBomb
   create-bombs 1 [
-      set size 3
-      set shape "fish"
-      spawnRandomLocation
+    set size 3
+    set shape "fish"
+    spawnRandomLocation
 
-      set heading towards player 0
-    ]
+    set heading towards player 0
+  ]
 end
 
 to genArrow
-  create-arrows 1 [
-    setxy ([xcor] of player 0) ([ycor] of player 0)
-    set heading towardsxy mouse-xcor mouse-ycor
-    set contact false
+  if numArrows > 0 [
+    set numArrows (numArrows - 1)
+    create-arrows 1 [
+      setxy ([xcor] of player 0) ([ycor] of player 0)
+      set heading towardsxy mouse-xcor mouse-ycor
+      set contact false
+    ]
   ]
 end
 
@@ -268,7 +283,7 @@ end
 
 to createItem
   if count patches with [pcolor = orange] = 0 [
-    if random 300 < 1 [
+    if random 700 < 1 [
       ask one-of patches [
         set pcolor orange
       ]
@@ -427,6 +442,17 @@ MONITOR
 241
 items
 rItems
+17
+1
+11
+
+MONITOR
+45
+195
+102
+240
+arrows
+numArrows
 17
 1
 11
