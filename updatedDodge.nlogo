@@ -3,13 +3,17 @@ globals [
   score
   highScore
   money
+  playerSpeed
   bulletSpeed
+  arrowSpeed
   spawnRate
+  items
 ]
 
 breed [players player]
 breed [bullets bullet]
 breed [bombs bomb]
+breed [arrows arrow]
 
 players-own [
   playerMS
@@ -26,14 +30,25 @@ bombs-own [
   lifetime
 ]
 
+arrows-own [
+  contact
+]
+
+to-report rItems
+  report items
+end
+
 to setup
   clear-turtles
   clear-patches
 
   set alive? true
   set score 0
+  set items 0
   set bulletSpeed 1
   set spawnRate 1.5
+  set playerSpeed .2
+  set arrowSpeed playerSpeed
 
   create-players 1 [
     set shape "circle"
@@ -53,11 +68,19 @@ to play
       set highScore score
     ]
     set score 0
+    set items 0
   ]
 
 
   [
     set bulletSpeed sqrt(sqrt(score)) / 3
+
+    ; creation of powerups
+    createPowerup
+    checkPowerup
+
+    createItem
+    checkItem
 
     ; creation of bullets and bombs
     every spawnRate [
@@ -69,9 +92,9 @@ to play
 
     ; movement of ALL entities
     every .03 [
-      ask players [
+      ask player 0 [
         set heading towardsxy mouse-xcor mouse-ycor
-        fd 0.2
+        fd playerSpeed
       ]
 
       ask bullets [
@@ -82,14 +105,19 @@ to play
         fd bulletSpeed
         set lifetime (lifetime + 1)
       ]
+      ask arrows [
+        set arrowSpeed playerSpeed * 2
+        fd arrowSpeed
+      ]
     ]
 
     ; check death of ALL entities
     checkPlayerDeath
     checkBulletDeath
     checkBombDeath
+    checkArrowDeath
 
-    if random 100000 < 1 and count bombs > 0 [
+    if random 50000 < 1 and count bombs > 0 [
       bombActivate
     ]
   ]
@@ -109,14 +137,9 @@ to checkBulletDeath
     ycor > max-pycor - .5 or
     ycor < min-pycor + .5) and lifetime > 10] [
 
-    ifelse not fromBomb
-    [
+    if not fromBomb [
       set score (score + 1)
       set money (money + 1)
-    ]
-    [
-      set score (score + 0.5)
-      set money (money + 0.5)
     ]
     die
   ]
@@ -129,6 +152,39 @@ to checkBombDeath
     ycor < min-pycor + .5) and lifetime > 10] [
     set score (score + 3)
     set money (money + 1)
+    die
+  ]
+end
+
+to checkArrowDeath
+  ask arrows with [xcor > max-pxcor - .5 or
+    xcor < min-pxcor + .5 or
+    ycor > max-pycor - .5 or
+    ycor < min-pycor + .5] [
+    die
+  ]
+
+  ask arrows [
+    if count bullets-on neighbors > 0 [
+      ask bullets-on neighbors [
+        set score (score + 1)
+        set money (money + 1)
+        die
+      ]
+      set contact true
+    ]
+
+    if count bombs-on neighbors > 0 [
+      ask bombs-on neighbors [
+        set score (score + 1)
+        set money (money + 1)
+        die
+      ]
+      set contact true
+    ]
+  ]
+
+  ask arrows with [contact] [
     die
   ]
 end
@@ -149,6 +205,14 @@ to genBomb
 
       set heading towards player 0
     ]
+end
+
+to genArrow
+  create-arrows 1 [
+    setxy ([xcor] of player 0) ([ycor] of player 0)
+    set heading towardsxy mouse-xcor mouse-ycor
+    set contact false
+  ]
 end
 
 to bombActivate
@@ -178,10 +242,63 @@ to bombActivate
   ask bombs [ die ]
 end
 
+to createPowerup
+  if count patches with [pcolor = green] = 0 [
+    if random 100 < 1 [
+      ask one-of patches [
+        set pcolor green
+      ]
+    ]
+  ]
+end
 
+to checkPowerup
+  ask patches with [pcolor = green] [
+    ask neighbors [
+      if count players-here > 0 [
+        ask patches with [pcolor = green] [
+          set pcolor black
+        ]
 
+        set playerSpeed (playerSpeed * 1.1)
+      ]
+    ]
+  ]
+end
 
+to createItem
+  if count patches with [pcolor = orange] = 0 [
+    if random 300 < 1 [
+      ask one-of patches [
+        set pcolor orange
+      ]
+    ]
+  ]
+end
 
+to checkItem
+  ask patches with [pcolor = orange] [
+    ask neighbors [
+      if count players-here > 0 [
+        ask patches with [pcolor = orange] [
+          set pcolor black
+        ]
+
+        set items (items + 1)
+      ]
+    ]
+  ]
+end
+
+to useItem
+  if items > 0 [
+    set items (items - 1)
+    create-ordered-arrows 15 [
+      set contact false
+      setxy ([xcor] of player 0) ([ycor] of player 0)
+    ]
+  ]
+end
 
 
 
@@ -205,7 +322,7 @@ end
 to createLabels
   ask patch 15 13 [set plabel word "Score: "  score]
   ask patch 15 15 [set plabel word "Highscore: " highScore]
-  ask patch -8 15 [set plabel word "Money: " money]
+;  ask patch -8 15 [set plabel word "Money: " money]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -236,10 +353,10 @@ ticks
 30.0
 
 BUTTON
-38
-58
-101
-91
+121
+24
+184
+57
 NIL
 play
 T
@@ -247,7 +364,7 @@ T
 T
 OBSERVER
 NIL
-NIL
+E
 NIL
 NIL
 1
@@ -264,10 +381,55 @@ NIL
 T
 OBSERVER
 NIL
-NIL
+Q
 NIL
 NIL
 1
+
+BUTTON
+38
+117
+124
+150
+NIL
+genArrow
+NIL
+1
+T
+OBSERVER
+NIL
+R
+NIL
+NIL
+1
+
+BUTTON
+128
+123
+210
+156
+NIL
+useItem
+NIL
+1
+T
+OBSERVER
+NIL
+W
+NIL
+NIL
+1
+
+MONITOR
+132
+196
+189
+241
+items
+rItems
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
