@@ -7,6 +7,7 @@ globals [
   bulletSpeed
   arrowSpeed
   spawnRate
+  bulletSpawnRate ; how often the turret spawns more bullets
   items
   numArrows
 ]
@@ -14,6 +15,7 @@ globals [
 breed [players player]
 breed [bullets bullet]
 breed [bombs bomb]
+breed [turrets turret]
 breed [arrows arrow]
 
 players-own [
@@ -28,6 +30,11 @@ bullets-own [
 
 bombs-own [
   bombMS
+  lifetime
+]
+
+turrets-own [
+  turretMS
   lifetime
 ]
 
@@ -92,10 +99,16 @@ to play
     ; creation of bullets and bombs
     every spawnRate [
       genBullet
+
       if random 3 < 1 and count bombs < 1 [
         genBomb
       ]
+
+      if random 7 < 1 and count turrets < 1 [
+        genTurret
+      ]
     ]
+
 
     ; movement of ALL entities
     every .03 [
@@ -116,24 +129,37 @@ to play
         set arrowSpeed playerSpeed * 2
         fd arrowSpeed
       ]
-    ]
+      ask turrets [
+        fd bulletSpeed / 2
+        set lifetime (lifetime + 1)
+      ]
 
-    ; gives arrows to player
-    every 3 [
-      if numArrows < 10 [
-        set numArrows (numArrows + 1)
+      ; gives arrows to player
+      every 3 [
+        if numArrows < 10 [
+          set numArrows (numArrows + 1)
+        ]
+      ]
+
+      ; check death of ALL entities
+      checkPlayerDeath
+      checkBulletDeath
+      checkTurretDeath
+      checkBombDeath
+      checkArrowDeath
+
+      ; activation of obstacles
+      if random 30000 < 1 and count bombs > 0 [
+        bombActivate
+      ]
+
+      if count turrets > 0 [
+        every bulletSpawnRate [
+          spawnBullet
+        ]
       ]
     ]
 
-    ; check death of ALL entities
-    checkPlayerDeath
-    checkBulletDeath
-    checkBombDeath
-    checkArrowDeath
-
-    if random 50000 < 1 and count bombs > 0 [
-      bombActivate
-    ]
   ]
 end
 
@@ -165,7 +191,18 @@ to checkBombDeath
     ycor > max-pycor - .5 or
     ycor < min-pycor + .5) and lifetime > 10] [
     set score (score + 3)
-    set money (money + 1)
+    set money (money + 3)
+    die
+  ]
+end
+
+to checkTurretDeath
+  ask turrets with [(xcor > max-pxcor - .5 or
+    xcor < min-pxcor + .5 or
+    ycor > max-pycor - .5 or
+    ycor < min-pycor + .5) and lifetime > 10] [
+    set score (score + 5)
+    set money (money + 5)
     die
   ]
 end
@@ -218,6 +255,25 @@ to genBomb
     spawnRandomLocation
 
     set heading towards player 0
+  ]
+end
+
+to genTurret
+  create-turrets 1 [
+    set bulletSpawnRate .2
+    set size 2
+    set shape "person"
+    spawnRandomLocation
+
+    set heading towardsxy mouse-xcor mouse-ycor
+  ]
+end
+
+to spawnBullet
+  create-bullets 1 [
+    set fromBomb false
+    set heading towards player 0
+    setxy ([xcor] of one-of turrets) ([ycor] of one-of turrets)
   ]
 end
 
@@ -285,7 +341,7 @@ end
 
 to createItem
   if count patches with [pcolor = orange] = 0 [
-    if random 700 < 1 [
+    if random 100000 < 1 [
       ask one-of patches [
         set pcolor orange
       ]
