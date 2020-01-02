@@ -275,7 +275,7 @@ end
 
 to genTurret
   create-turrets 1 [
-    set bulletSpawnRate 1
+    set bulletSpawnRate
     set size 2
     set shape "person"
     spawnRandomLocation
