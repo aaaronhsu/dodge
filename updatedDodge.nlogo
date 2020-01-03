@@ -79,6 +79,8 @@ to play
   ; death mechanism
   ifelse not alive? [
     clear-turtles
+    ask patches with [pcolor != black] [set pcolor black]
+    shopMenu ;currently faulty
 
     if highScore < score [
       set highScore score
@@ -412,6 +414,84 @@ to createLabels
   ask patch 15 15 [set plabel word "Highscore: " highScore]
 ;  ask patch -8 15 [set plabel word "Money: " money]
 end
+
+;shop option spacing: (((max-pycor * 2) + 1) / 5)
+;
+
+to clearOptions
+  ask patches with [pycor > ((max-pycor - (4 * (((max-pycor * 2) + 1) / 5))) - 1) and pycor < ((max-pycor - (2 * (((max-pycor * 2) + 1) / 5))) + 1)]
+          [set plabel " "]
+end
+
+to shopMenu ;initial menu of shop
+  ask patch 2 (max-pycor - (((max-pycor * 2) + 1) / 5)) [set plabel "SHOP"] ; SHOP label
+  ask patch max-pxcor (min-pycor + 1) [set plabel word "You have $" money] ; currency player has
+  ask patch (min-pxcor + 9) (min-pycor + 1) [set plabel "CONTINUE"] ; continue button label
+  ask patch (min-pxcor + 8) (max-pycor - (2 * (((max-pycor * 2) + 1) / 5))) [set plabel "Upgrades"]
+  ask patch (max-pxcor) (max-pycor - (3 * (((max-pycor * 2) + 1) / 5))) [set plabel "Customize Screen"]
+  ask patch (min-pxcor + 9) (max-pycor - (4 * (((max-pycor * 2) + 1) / 5))) [set plabel "Power Ups"]
+  ;color of the option buttons (add later)
+  ;to upgrade menu
+  if mouse-down? = true [
+    ;Upgrades menu
+    ifelse mouse-xcor > min-pxcor and mouse-xcor < 0 and
+    mouse-ycor > ((max-pycor - (2 * (((max-pycor * 2) + 1) / 5))) - 1) and
+    mouse-ycor < ((max-pycor - (2 * (((max-pycor * 2) + 1) / 5))) + 1) [
+      clearOptions
+      upgradesMenu
+    ]
+    [ifelse mouse-xcor > min-pxcor and mouse-xcor < 0 and
+      mouse-ycor > ((max-pycor - (3 * (((max-pycor * 2) + 1) / 5))) - 1) and
+      mouse-ycor < ((max-pycor - (3 * (((max-pycor * 2) + 1) / 5))) + 1) [
+        clearOptions
+        customizeMenu
+      ]
+      [if mouse-xcor > min-pxcor and mouse-xcor < 0 and
+        mouse-ycor > ((max-pycor - (4 * (((max-pycor * 2) + 1) / 5))) - 1) and
+        mouse-ycor < ((max-pycor - (4 * (((max-pycor * 2) + 1) / 5))) + 1) [
+          clearOptions
+          powupMenu
+        ]
+      ]
+    ]
+  ]
+end
+
+to upgradesMenu
+  ;placeholder options
+  ask patch 10 0 [set plabel "Currently no options"]
+  ask patch 2 -1 [set plabel "BACK"]
+  if mouse-down? = true [
+    if mouse-xcor <= 2 and mouse-xcor >= -2 and mouse-ycor = -1 [
+      clearOptions
+      shopMenu
+    ]
+  ]
+end
+
+to customizeMenu
+  ;placeholder options
+  ask patch 10 0 [set plabel "Currently no options"]
+  ask patch 2 -1 [set plabel "BACK"]
+  if mouse-down? = true [
+    if mouse-xcor <= 2 and mouse-xcor >= -2 and mouse-ycor = -1 [
+      clearOptions
+      shopMenu
+    ]
+  ]
+end
+
+to powupMenu
+  ;placeholder options
+  ask patch 10 0 [set plabel "Currently no options"]
+  ask patch 2 -1 [set plabel "BACK"]
+  if mouse-down? = true [
+    if mouse-xcor <= 2 and mouse-xcor >= -2 and mouse-ycor = -1 [
+      clearOptions
+      shopMenu
+    ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 219
@@ -529,23 +609,6 @@ numArrows
 17
 1
 11
-
-BUTTON
-136
-90
-199
-123
-NIL
-NIL
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
 
 @#$#@#$#@
 ## WHAT IS IT?
