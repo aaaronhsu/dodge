@@ -421,7 +421,7 @@ end
 to createLabels
   ask patch 15 13 [set plabel word "Score: "  score]
   ask patch 15 15 [set plabel word "Highscore: " highScore]
-  ask patch 15 -15 [set plabel word "Money: " money]
+
 ;  ask patch -8 15 [set plabel word "Money: " money]
 end
 
