@@ -438,7 +438,7 @@ to menuTab ;initial menu of shop
   ask patch -7 3 [set plabel "Upgrades"]
   ask patch -5 -3 [set plabel "Background"]
   ask patch -6.6 -9 [set plabel "Powerups"]
-  ask patch -8.8 -15 [set plabel "Continue"]
+  ask patch 10 -3 [set plabel "Continue"]
 
   if mouse-down? [
     if mouse-xcor > -14.8 and
@@ -456,26 +456,33 @@ to menuTab ;initial menu of shop
     mouse-ycor < -8 and
     mouse-ycor > -9.7 [ set shopTab "powerups" ]
 
-    if mouse-xcor > -16.4 and
-    mouse-xcor < 8.5 and
-    mouse-ycor < -14.1 and
-    mouse-ycor > -15.6 [ set alive? true
-    setup]
+    if mouse-xcor > 2.5 and
+    mouse-xcor < 10.5 and
+    mouse-ycor < -2 and
+    mouse-ycor > -3.8 and
+    shopTab = "menu" [ set alive? true
+      setup]
     clear-patches
-  createLabels
+    createLabels
   ]
 
 end
 
 to upgradeTab
   ;placeholder options
-  ask patch 10 0 [set plabel "Currently no options"]
-  ask patch 2 -1 [set plabel "BACK"]
+  ask patch 4 11 [set plabel "Upgrades"]
+  ask patch 7 6 [set plabel "Increase Base Speed"]
+
+  ask patch 16 6 [set plabel "$10"]
+  ask patch 7 2 [set plabel "Increase Arrow Inventory"]
+  ask patch 16 2 [set plabel "$5"]
+  ask patch -12 -15 [set plabel "Back"]
+
   if mouse-down? = true [
-    if mouse-xcor <= 2 and mouse-xcor >= -2 and mouse-ycor > -1.5 and mouse-ycor < -0.5 [
+    if mouse-xcor <= -11.2 and mouse-xcor >= -16.1 and mouse-ycor > -15.8 and mouse-ycor < -13.8 [
       set shopTab "menu"
       clear-patches
-  createLabels
+      createLabels
     ]
   ]
 end
@@ -483,25 +490,25 @@ end
 to backgroundTab
   ;placeholder options
   ask patch 10 0 [set plabel "Currently no options"]
-  ask patch 2 -1 [set plabel "BACK"]
+  ask patch -12 -15 [set plabel "BACK"]
   if mouse-down? = true [
-    if mouse-xcor <= 2 and mouse-xcor >= -2 and mouse-ycor > -1.5 and mouse-ycor < -0.5 [
+    if mouse-xcor <= -11.2 and mouse-xcor >= -16.1 and mouse-ycor > -15.8 and mouse-ycor < -13.8 [
       set shopTab "menu"
       clear-patches
-  createLabels
+      createLabels
     ]
   ]
 end
 
 to powerupTab
   ;placeholder options
-  ask patch 10 0 [set plabel "Currently no options"]
-  ask patch 2 -1 [set plabel "BACK"]
+  ask patch 5 11 [set plabel "Powerups"]
+  ask patch -12 -15 [set plabel "BACK"]
   if mouse-down? = true [
-    if mouse-xcor <= 2 and mouse-xcor >= -2 and mouse-ycor > -1.5 and mouse-ycor < -0.5 [
+    if mouse-xcor <= -11.2 and mouse-xcor >= -16.1 and mouse-ycor > -15.8 and mouse-ycor < -13.8 [
       set shopTab "menu"
       clear-patches
-  createLabels
+      createLabels
     ]
   ]
 end
@@ -639,6 +646,28 @@ NIL
 NIL
 NIL
 1
+
+MONITOR
+28
+350
+144
+395
+NIL
+mouse-xcor
+17
+1
+11
+
+MONITOR
+29
+413
+107
+458
+NIL
+mouse-ycor
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
