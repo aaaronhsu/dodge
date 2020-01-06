@@ -545,7 +545,7 @@ T
 T
 OBSERVER
 NIL
-E
+W
 NIL
 NIL
 1
@@ -579,7 +579,7 @@ NIL
 T
 OBSERVER
 NIL
-R
+Z
 NIL
 NIL
 1
@@ -596,7 +596,7 @@ NIL
 T
 OBSERVER
 NIL
-W
+X
 NIL
 NIL
 1
@@ -624,11 +624,11 @@ numArrows
 11
 
 BUTTON
-6
-309
-333
-342
-NIL
+49
+291
+166
+324
+mouse
 if mouse-down? [\nprint mouse-xcor\nprint mouse-ycor\n]
 T
 1
