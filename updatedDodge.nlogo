@@ -10,6 +10,15 @@ globals [
   bulletSpawnRate ; how often the turret spawns more bullets
   items
   numArrows
+  firstStartUp
+  mouseClicked?
+
+
+  up1
+  up2
+  pow1
+  pow2
+  pow3
 
   shopTab
 ]
@@ -53,17 +62,22 @@ to-report rArrows
 end
 
 to setup
+  set mouseClicked? true
   clear-turtles
   clear-patches
+
+  if firstStartUp = 0 [ setupShop ]
+  set firstStartUp 1
 
   set alive? true
   set score 0
   set items 0
-  set numArrows 0
+  set numArrows (pow1 * 3)
+  set items pow2
   set bulletSpeed 1
   set spawnRate 3
-  set playerSpeed .2
-  set arrowSpeed playerSpeed
+  set playerSpeed .2 + (up1 * .008)
+  set arrowSpeed playerSpeed - (up1 * .008)
   set shopTab "menu"
 
   create-players 1 [
@@ -73,11 +87,17 @@ to setup
   ]
 end
 
+to setupShop
+  set up1 0
+  set up2 0
+  set pow1 0
+  set pow2 0
+  set pow3 0
+end
 
 to play
   createLabels
-
-
+if not mouse-down? [ set mouseClicked? false]
 
   ; death mechanism
   ifelse not alive? [
@@ -152,7 +172,7 @@ to play
 
       ; gives arrows to player
       every 3 [
-        if numArrows < 10 [
+        if numArrows < 10 + up2 [
           set numArrows (numArrows + 1)
         ]
       ]
@@ -392,7 +412,7 @@ end
 to useItem
   if items > 0 [
     set items (items - 1)
-    create-ordered-arrows 15 [
+    create-ordered-arrows 15 + (pow3 * 2) [
       set contact false
       setxy ([xcor] of player 0) ([ycor] of player 0)
     ]
@@ -436,7 +456,7 @@ end
 to menuTab ;initial menu of shop
   ask patch 2 8 [set plabel "Shop"]
   ask patch -7 3 [set plabel "Upgrades"]
-  ask patch -5 -3 [set plabel "Background"]
+  ask patch -6 -3 [set plabel "Customize"]
   ask patch -6.6 -9 [set plabel "Powerups"]
   ask patch 10 -3 [set plabel "Continue"]
 
@@ -475,28 +495,41 @@ to upgradeTab
 
 
   ask patch 7 6 [set plabel "Increase Base Speed"]
-  ask patch 12 6 [set plabel "(0)"]
+  ask patch 12 6 [set plabel up1]
   ask patch 16 6 [set plabel "$10"]
 
   ask patch 7 2 [set plabel "Increase Arrow Inventory"]
-  ask patch 12 2 [set plabel "(0)"]
+  ask patch 12 2 [set plabel up2]
   ask patch 16 2 [set plabel "$5"]
 
-
-  if mouse-down? = true [
+  if mouse-down? = true and not mouseClicked? [
     if mouse-xcor <= -11.2 and mouse-xcor >= -16.1 and mouse-ycor > -15.8 and mouse-ycor < -13.8 [
       set shopTab "menu"
       clear-patches
       createLabels
     ]
+
+    if mouse-ycor < 8 and mouse-ycor > 4 and money >= 10 [
+      set up1 (up1 + 1)
+      set money (money - 10)
+      set mouseClicked? true
+    ]
+
+
+    if mouse-ycor < 4 and mouse-ycor > 0 and money >= 5 [
+      set up2 (up2 + 1)
+      set money (money - 5)
+      set mouseClicked? true
+    ]
   ]
+
 end
 
 to backgroundTab
   ;placeholder options
   ask patch 10 0 [set plabel "Currently no options"]
   ask patch -12 -15 [set plabel "BACK"]
-  if mouse-down? = true [
+  if mouse-down? = true and not mouseClicked? [
     if mouse-xcor <= -11.2 and mouse-xcor >= -16.1 and mouse-ycor > -15.8 and mouse-ycor < -13.8 [
       set shopTab "menu"
       clear-patches
@@ -509,11 +542,43 @@ to powerupTab
   ;placeholder options
   ask patch 5 11 [set plabel "Powerups"]
   ask patch -12 -15 [set plabel "BACK"]
-  if mouse-down? = true [
+
+  ask patch 7 6 [set plabel "Start with +3 arrows"]
+  ask patch 12 6 [set plabel pow1]
+  ask patch 16 6 [set plabel "$5"]
+
+  ask patch 7 2 [set plabel "Start with +1 item"]
+  ask patch 12 2 [set plabel pow2]
+  ask patch 16 2 [set plabel "$5"]
+
+  ask patch 7 -2 [set plabel "Item spawn more arrows"]
+  ask patch 12 -2 [set plabel pow3]
+  ask patch 16 -2 [set plabel "$5"]
+
+  if mouse-down? = true and not mouseClicked? [
     if mouse-xcor <= -11.2 and mouse-xcor >= -16.1 and mouse-ycor > -15.8 and mouse-ycor < -13.8 [
       set shopTab "menu"
       clear-patches
       createLabels
+    ]
+
+    if mouse-ycor < 8 and mouse-ycor > 4 and money >= 5 [
+      set pow1 (pow1 + 1)
+      set money (money - 5)
+      set mouseClicked? true
+    ]
+
+
+    if mouse-ycor < 4 and mouse-ycor > 0 and money >= 5 [
+      set pow2 (pow2 + 1)
+      set money (money - 5)
+      set mouseClicked? true
+    ]
+
+    if mouse-ycor < 0 and mouse-ycor > -4 and money >= 5 [
+      set pow3 (pow3 + 1)
+      set money (money - 5)
+      set mouseClicked? true
     ]
   ]
 end
