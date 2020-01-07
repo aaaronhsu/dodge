@@ -73,7 +73,7 @@ to setup
   set score 0
   set items 0
   set numArrows (pow1 * 3)
-  set ritems pow2
+  set items pow2
   set bulletSpeed 1
   set spawnRate 3
   set playerSpeed .2 + (up1 * .008)
@@ -185,7 +185,7 @@ if not mouse-down? [ set mouseClicked? false]
       checkArrowDeath
 
       ; activation of obstacles
-      if random 200 < 1 and count bombs > 0 [
+      if random 00 < 1 and count bombs > 0 [
         bombActivate
       ]
 
@@ -363,7 +363,7 @@ end
 
 to createPowerup
   if count patches with [pcolor = green] = 0 [
-    if random 50000 < 1 [
+    if random 8000 < 1 [
       ask one-of patches [
         set pcolor green
       ]
@@ -379,7 +379,7 @@ to checkPowerup
           set pcolor black
         ]
 
-        set playerSpeed (playerSpeed * 1.1)
+        set playerSpeed (playerSpeed * 1.2)
       ]
     ]
   ]
@@ -387,7 +387,7 @@ end
 
 to createItem
   if count patches with [pcolor = orange] = 0 [
-    if random 100000 < 1 [
+    if random 30000 < 1 [
       ask one-of patches [
         set pcolor orange
       ]
