@@ -1,3 +1,4 @@
+extensions [sound]
 globals [
   alive?
   score
@@ -69,9 +70,7 @@ to setup
   if firstStartUp = 0 [ setupShop ]
   set firstStartUp 1
 
-  set alive? true
   set score 0
-
   set numArrows (pow1 * 3)
   set items pow2
   set bulletSpeed 1
@@ -79,12 +78,15 @@ to setup
   set playerSpeed .2 + (up1 * .008)
   set arrowSpeed playerSpeed - (up1 * .008)
   set shopTab "menu"
+  sound:play-note "Seashore" 60 64 1
 
   create-players 1 [
     set shape "circle"
     set color white
     set size 1.5
   ]
+
+  set alive? true
 end
 
 to setupShop
@@ -98,6 +100,10 @@ end
 to play
   createLabels
   if not mouse-down? [ set mouseClicked? false]
+
+  every 2 [
+    ;sound:play-note "muted electric guitar" 60 64 1
+  ]
 
   ; death mechanism
   ifelse not alive? [
@@ -411,6 +417,7 @@ end
 
 to useItem
   if items > 0 [
+
     set items (items - 1)
     create-ordered-arrows 15 + (pow3 * 2) [
       set contact false
@@ -493,7 +500,6 @@ to menuTab ;initial menu of shop
     mouse-ycor < -2 and
     mouse-ycor > -3.8 and
     shopTab = "menu" [
-      set alive? true
       setup
       clear-patches
       createLabels
