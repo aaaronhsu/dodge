@@ -71,7 +71,6 @@ to setup
 
   set alive? true
   set score 0
-  set items 0
   set numArrows (pow1 * 3)
   set items pow2
   set bulletSpeed 1
@@ -97,7 +96,7 @@ end
 
 to play
   createLabels
-if not mouse-down? [ set mouseClicked? false]
+  if not mouse-down? [ set mouseClicked? false]
 
   ; death mechanism
   ifelse not alive? [
@@ -460,30 +459,44 @@ to menuTab ;initial menu of shop
   ask patch -6.6 -9 [set plabel "Powerups"]
   ask patch 10 -3 [set plabel "Continue"]
 
-  if mouse-down? [
+  if mouse-down? and not mouseClicked? [
     if mouse-xcor > -14.8 and
     mouse-xcor < -6.2 and
     mouse-ycor < 4 and
-    mouse-ycor > 2.2 [ set shopTab "upgrades" ]
+    mouse-ycor > 2.2 [
+      set shopTab "upgrades"
+      clear-patches
+      createLabels
+    ]
 
-  if mouse-xcor > -14.8 and
+    if mouse-xcor > -14.8 and
     mouse-xcor < -4.5 and
     mouse-ycor < -2.1 and
-    mouse-ycor > -3.5 [ set shopTab "backgrounds" ]
+    mouse-ycor > -3.5 [
+      set shopTab "backgrounds"
+      clear-patches
+      createLabels
+    ]
 
     if mouse-xcor > -15 and
     mouse-xcor < -6.4 and
     mouse-ycor < -8 and
-    mouse-ycor > -9.7 [ set shopTab "powerups" ]
+    mouse-ycor > -9.7 [
+      set shopTab "powerups"
+      clear-patches
+      createLabels
+    ]
 
     if mouse-xcor > 2.5 and
     mouse-xcor < 10.5 and
     mouse-ycor < -2 and
     mouse-ycor > -3.8 and
-    shopTab = "menu" [ set alive? true
-      setup]
-    clear-patches
-    createLabels
+    shopTab = "menu" [
+      set alive? true
+      setup
+      clear-patches
+      createLabels
+    ]
   ]
 
 end
