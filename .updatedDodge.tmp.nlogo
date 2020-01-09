@@ -67,6 +67,7 @@ to setup
   clear-turtles
   clear-patches
 
+
   if firstStartUp = 0 [ setupShop ]
   set firstStartUp 1
 
@@ -81,9 +82,9 @@ to setup
   sound:play-note "Seashore" 60 64 1
 
   create-players 1 [
-    set shape "circle"
+    set shape "player"
     set color white
-    set size 1.5
+    set size 3
   ]
 
   set alive? true
@@ -108,7 +109,6 @@ to play
   ; death mechanism
   ifelse not alive? [
     clear-turtles
-    ask patches with [pcolor != black] [set pcolor black]
 
     if shopTab = "menu" [ menuTab ]
     if shopTab = "powerups" [ powerupTab ]
@@ -191,7 +191,7 @@ to play
       checkArrowDeath
 
       ; activation of obstacles
-      if random 150 < 1 and count bombs > 0 [
+      if random 100 < 1 and count bombs > 0 [
         bombActivate
       ]
 
@@ -210,6 +210,7 @@ to checkPlayerDeath
     if count neighbors with [count bullets-here > 0 or count bombs-here > 0] > 0 [
       set alive? false
       set shopTab "menu"
+      ask patches with [pcolor != black] [set pcolor black]
     ]
   ]
 end
@@ -295,6 +296,9 @@ end
 to genBullet
   create-bullets 1 [
     spawnRandomLocation
+
+    set shape "fish 1.1"
+    set size 2
     set fromBomb false
     set heading towards player 0
   ]
@@ -303,7 +307,7 @@ end
 to genBomb
   create-bombs 1 [
     set size 3
-    set shape "fish"
+    set shape "fish bowl (full)"
     spawnRandomLocation
 
     set heading towards player 0
@@ -313,8 +317,8 @@ end
 to genTurret
   create-turrets 1 [
     set bulletSpawnRate 1
-    set size 2
-    set shape "person"
+    set size 5
+    set shape "jellyfish"
     spawnRandomLocation
 
     set heading towardsxy mouse-xcor mouse-ycor
@@ -324,6 +328,8 @@ end
 to spawnBullet
   create-bullets 1 [
     set fromBomb true
+    set shape "fish 3"
+    set size 1.5
     setxy ([xcor] of one-of turrets) ([ycor] of one-of turrets)
     set heading towards player 0
   ]
@@ -345,7 +351,9 @@ to bombActivate
   [
     create-ordered-bullets 4 [
       set fromBomb true
-        setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
+      set shape "fish 2"
+      set size 1.5
+      setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
     ]
   ]
   [
@@ -353,12 +361,16 @@ to bombActivate
     [
       create-ordered-bullets 6 [
         set fromBomb true
+        set shape "fish 2"
+        set size 1.5
         setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
       ]
     ]
     [
       create-ordered-bullets 8 [
         set fromBomb true
+        set shape "fish 2"
+        set size 1.5
         setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
       ]
     ]
@@ -417,7 +429,7 @@ end
 
 to useItem
   if items > 0 [
-
+    sound:play-note "gunshot" 60 64 1
     set items (items - 1)
     create-ordered-arrows 15 + (pow3 * 2) [
       set contact false
@@ -503,6 +515,8 @@ to menuTab ;initial menu of shop
       setup
       clear-patches
       createLabels
+
+      set items pow2
     ]
   ]
 
@@ -913,6 +927,114 @@ Polygon -1 true false 75 45 83 77 71 103 86 114 166 78 135 60
 Polygon -7500403 true true 30 136 151 77 226 81 280 119 292 146 292 160 287 170 270 195 195 210 151 212 30 166
 Circle -16777216 true false 215 106 30
 
+fish 1.1
+false
+0
+Polygon -1 true false 59 116 36 72 30 71 15 105 30 135 15 165 28 199 35 197 60 151
+Polygon -1 true false 135 195 119 235 95 218 76 210 46 204 60 165
+Polygon -1 true false 75 45 83 77 71 103 86 114 166 78 135 60
+Polygon -7500403 true true 30 136 151 77 226 81 280 119 292 146 292 160 287 170 270 195 195 210 151 212 60 165
+Circle -16777216 true false 215 106 30
+Polygon -7500403 true true 269 194
+Polygon -16777216 true false 281 178 291 162 292 149 285 131 269 128 253 139 247 156 247 165 248 175 266 185 273 189
+
+fish 1.2
+false
+0
+Polygon -1 true false 59 116 36 72 30 71 15 105 30 135 15 165 28 199 35 197 60 151
+Polygon -1 true false 135 195 119 235 95 218 76 210 46 204 60 165
+Polygon -1 true false 75 45 83 77 71 103 86 114 166 78 135 60
+Polygon -7500403 true true 30 136 151 77 226 81 280 119 292 146 292 160 287 170 270 195 195 210 151 212 60 165
+Circle -16777216 true false 215 106 30
+Polygon -7500403 true true 269 194
+Polygon -16777216 true false 281 178 291 162 292 149 287 138 274 137 265 145 262 157 264 167 266 176 268 183 274 187
+
+fish 1.3
+false
+0
+Polygon -1 true false 59 116 36 72 30 71 15 105 30 135 15 165 28 199 35 197 60 151
+Polygon -1 true false 135 195 119 235 95 218 76 210 46 204 60 165
+Polygon -1 true false 75 45 83 77 71 103 86 114 166 78 135 60
+Polygon -7500403 true true 30 136 151 77 226 81 280 119 292 146 292 160 287 170 270 195 195 210 151 212 60 165
+Circle -16777216 true false 215 106 30
+Polygon -7500403 true true 269 194
+Polygon -2064490 true false 285 180
+Polygon -16777216 true false 280 178 289 167 292 155 288 147 276 148 271 158 274 171 281 178
+
+fish 1.4
+false
+0
+Polygon -1 true false 59 116 36 72 30 71 15 105 30 135 15 165 28 199 35 197 60 151
+Polygon -1 true false 135 195 119 235 95 218 76 210 46 204 60 165
+Polygon -1 true false 75 45 83 77 71 103 86 114 166 78 135 60
+Polygon -7500403 true true 30 136 151 77 226 81 280 119 292 146 292 160 287 170 270 195 195 210 151 212 60 165
+Circle -16777216 true false 215 106 30
+
+fish 2
+false
+0
+Polygon -1 true false 56 133 34 127 12 105 21 126 23 146 16 163 10 194 32 177 55 173
+Polygon -7500403 true true 156 229 118 242 67 248 37 248 51 222 49 168
+Polygon -7500403 true true 30 60 45 75 60 105 50 136 150 53 89 56
+Polygon -7500403 true true 50 132 146 52 241 72 268 119 291 147 271 156 291 164 264 208 211 239 148 231 48 177
+Circle -1 true false 237 116 30
+Circle -16777216 true false 241 127 12
+Polygon -1 true false 159 228 160 294 182 281 206 236
+Polygon -7500403 true true 102 189 109 203
+Polygon -1 true false 215 182 181 192 171 177 169 164 152 142 154 123 170 119 223 163
+Line -16777216 false 240 77 162 71
+Line -16777216 false 164 71 98 78
+Line -16777216 false 96 79 62 105
+Line -16777216 false 50 179 88 217
+Line -16777216 false 88 217 149 230
+
+fish 3
+false
+0
+Polygon -7500403 true true 137 105 124 83 103 76 77 75 53 104 47 136
+Polygon -7500403 true true 226 194 223 229 207 243 178 237 169 203 167 175
+Polygon -7500403 true true 137 195 124 217 103 224 77 225 53 196 47 164
+Polygon -7500403 true true 40 123 32 109 16 108 0 130 0 151 7 182 23 190 40 179 47 145
+Polygon -7500403 true true 45 120 90 105 195 90 275 120 294 152 285 165 293 171 270 195 210 210 150 210 45 180
+Circle -1184463 true false 244 128 26
+Circle -16777216 true false 248 135 14
+Line -16777216 false 48 121 133 96
+Line -16777216 false 48 179 133 204
+Polygon -7500403 true true 241 106 241 77 217 71 190 75 167 99 182 125
+Line -16777216 false 226 102 158 95
+Line -16777216 false 171 208 225 205
+Polygon -1 true false 252 111 232 103 213 132 210 165 223 193 229 204 247 201 237 170 236 137
+Polygon -1 true false 135 98 140 137 135 204 154 210 167 209 170 176 160 156 163 126 171 117 156 96
+Polygon -16777216 true false 192 117 171 118 162 126 158 148 160 165 168 175 188 183 211 186 217 185 206 181 172 171 164 156 166 133 174 121
+Polygon -1 true false 40 121 46 147 42 163 37 179 56 178 65 159 67 128 59 116
+
+fish bowl (full)
+true
+12
+Polygon -1 true false 110 210 111 203 107 193 101 193 106 204 103 214 107 216 111 206
+Polygon -7500403 false false 60 74 254 74 240 106 255 136 255 198 210 241 104 240 60 197 61 164 61 135 75 105
+Polygon -13791810 true false 72 120 64 138 63 196 106 239 211 239 253 198 252 138 245 122 228 118 211 123 192 117 174 122 154 117 141 124 132 121 123 120 106 121 88 118
+Polygon -1 true false 120 213 116 203 110 198 105 203 110 214 106 223 111 230 116 224
+Polygon -1 true false 229 174 233 164 239 159 244 164 239 175 243 184 238 191 233 185
+Polygon -1 true false 119 153 115 143 109 138 104 143 109 154 105 163 110 170 115 164
+Polygon -1 true false 122 217 120 225 129 225 137 231 139 221 122 217
+Polygon -1 true false 224 177 232 187 222 185 216 192 212 182 230 177
+Polygon -1 true false 121 155 119 167 128 165 138 170 136 159 119 154
+Polygon -1 true false 149 206 140 195 124 191 127 197 123 203 129 211 150 207
+Polygon -1 true false 201 166 208 158 223 150 220 159 226 163 218 170 200 167
+Polygon -1 true false 151 148 145 137 128 133 129 139 126 145 132 149 152 149
+Circle -16777216 true false 145 203 2
+Circle -16777216 true false 145 203 2
+Polygon -8630108 true false 186 172 200 162 220 166 239 175 208 186 189 184 185 178
+Polygon -14835848 true false 164 151 150 141 130 145 111 154 142 165 161 163 165 157
+Polygon -5825686 true true 164 211 150 201 130 205 111 214 142 225 161 223 165 217
+Circle -16777216 true false 150 150 2
+Circle -16777216 true false 184 191 2
+Circle -16777216 true false 151 209 2
+Circle -16777216 true false 196 172 2
+Polygon -13840069 true false 189 240 190 240 188 234 191 226 188 218 194 212 194 205 197 200 200 208 199 219 196 222 197 227 196 235 195 237 192 236
+Polygon -13840069 true false 182 236 179 228 177 216 179 207 180 192 185 183 190 191 187 198 189 207 187 217 189 227 188 238
+
 flag
 false
 0
@@ -945,6 +1067,18 @@ Rectangle -7500403 true true 45 120 255 285
 Rectangle -16777216 true false 120 210 180 285
 Polygon -7500403 true true 15 120 150 15 285 120
 Line -16777216 false 30 120 270 120
+
+jellyfish
+true
+0
+Polygon -13791810 true false 143 142 142 158 146 173 145 187 148 197 146 210 150 221 155 211 155 199 155 189 158 180 155 170 156 164 153 152 154 146 146 141
+Polygon -13791810 true false 125 145 131 166 131 186 130 199 131 211 134 225 141 215 140 199 141 186 138 177 141 165 136 154 136 143 127 145
+Polygon -13791810 true false 109 144 109 158 109 170 114 178 113 187 116 205 112 214 118 223 122 219 123 207 122 197 125 188 124 177 127 163 123 157 123 143 112 144
+Polygon -13791810 true false 94 143 92 154 94 165 91 178 97 191 96 202 100 213 98 224 103 221 107 214 105 202 106 195 104 183 103 171 106 158 106 149 105 141
+Polygon -11221820 true false 92 144 83 127 83 113 87 101 96 90 114 85 131 83 149 86 161 91 170 106 170 122 164 137 156 145 126 145
+Circle -16777216 true false 106 108 8
+Circle -16777216 true false 136 108 8
+Polygon -16777216 true false 118 121 136 122 132 128 126 129 121 127 119 121
 
 leaf
 false
@@ -988,6 +1122,98 @@ Polygon -7500403 true true 135 105 90 60 45 45 75 105 135 135
 Polygon -7500403 true true 165 105 165 135 225 105 255 45 210 60
 Polygon -7500403 true true 135 90 120 45 150 15 180 45 165 90
 
+player
+true
+0
+Line -7500403 true 195 75 195 90
+Line -7500403 true 195 75 180 60
+Line -7500403 true 180 60 135 60
+Line -7500403 true 135 60 90 105
+Line -2064490 false 195 90 180 105
+Line -7500403 true 180 105 150 105
+Line -7500403 true 150 105 135 120
+Line -7500403 true 134 120 134 135
+Line -7500403 true 90 105 90 135
+Line -7500403 true 90 135 75 150
+Line -7500403 true 135 135 120 165
+Line -7500403 true 75 150 45 150
+Line -7500403 true 45 150 30 165
+Line -7500403 true 30 165 30 180
+Line -7500403 true 30 180 45 195
+Line -7500403 true 45 195 90 195
+Line -7500403 true 90 195 105 180
+Line -7500403 true 120 165 105 180
+Polygon -2064490 true false 180 60 135 60 90 105 90 135 75 150 45 150 30 165 30 180 45 195 90 195 120 165 135 135 135 120 150 105 180 105 195 90 195 75 180 60
+Line -16777216 false 136 59 150 108
+Line -16777216 false 89 118 126 151
+Line -16777216 false 80 146 102 185
+Line -16777216 false 57 150 57 195
+Rectangle -16777216 true false 180 75 180 75
+Line -16777216 false 106 88 134 123
+Polygon -16777216 true false 181 93 196 93 181 108 181 93
+Circle -7500403 true true 180 75 0
+Circle -16777216 true false 175 71 8
+
+player (2)
+true
+0
+Line -7500403 true 135 60 180 60
+Line -7500403 true 180 60 195 75
+Line -7500403 true 195 75 195 90
+Line -7500403 true 195 90 180 105
+Line -7500403 true 180 105 150 105
+Line -7500403 true 135 60 105 90
+Line -7500403 true 150 105 135 120
+Line -7500403 true 105 90 75 90
+Line -7500403 true 75 90 60 120
+Line -7500403 true 135 120 105 135
+Line -7500403 true 105 135 117 166
+Line -7500403 true 60 120 74 143
+Line -7500403 true 74 143 46 151
+Line -7500403 true 116 165 90 187
+Line -7500403 true 46 152 32 164
+Line -7500403 true 30 166 30 180
+Line -7500403 true 33 181 43 195
+Line -7500403 true 90 187 44 194
+Polygon -2064490 true false 181 61 137 61 106 89 76 91 62 120 73 143 46 152 32 166 29 182 44 194 92 189 116 165 107 136 134 122 150 105 181 106 194 91 196 74 182 62
+Circle -16777216 true false 174 70 8
+Polygon -16777216 true false 180 105 193 92 179 92 180 105
+Line -16777216 false 137 62 150 105
+Line -16777216 false 107 89 136 119
+Line -16777216 false 77 91 107 135
+Line -16777216 false 73 142 102 176
+Line -16777216 false 48 150 68 192
+
+player (3)
+true
+0
+Line -7500403 true 135 60 180 60
+Line -7500403 true 180 60 195 75
+Line -7500403 true 195 75 195 90
+Line -7500403 true 195 90 180 105
+Line -7500403 true 180 105 150 105
+Line -7500403 true 150 105 135 120
+Line -7500403 true 135 60 105 90
+Line -7500403 true 105 90 75 90
+Line -7500403 true 75 90 60 120
+Line -7500403 true 60 120 60 150
+Line -7500403 true 60 150 75 180
+Line -7500403 true 75 180 75 210
+Line -7500403 true 75 210 90 225
+Line -7500403 true 90 225 105 225
+Line -7500403 true 105 225 120 210
+Line -7500403 true 120 210 120 180
+Line -7500403 true 120 180 105 135
+Line -7500403 true 105 135 135 120
+Polygon -2064490 true false 181 60 136 60 106 90 76 90 61 120 61 150 76 180 76 210 91 225 106 225 121 210 121 180 106 135 136 120 151 105 181 105 196 90 196 75 181 60
+Circle -16777216 true false 175 72 8
+Polygon -16777216 true false 180 105 194 91 179 91 179 103
+Line -16777216 false 135 61 150 104
+Line -16777216 false 106 89 133 121
+Line -16777216 false 73 96 110 131
+Line -16777216 false 62 135 113 158
+Line -16777216 false 77 182 121 181
+
 sheep
 false
 15
@@ -1019,6 +1245,25 @@ star
 false
 0
 Polygon -7500403 true true 151 1 185 108 298 108 207 175 242 282 151 216 59 282 94 175 3 108 116 108
+
+starfish
+false
+0
+Polygon -955883 true false 151 32 179 114 263 119 200 176 224 254 153 209 80 259 107 184 42 118 125 117
+Circle -16777216 true false 118 132 12
+Circle -16777216 true false 172 132 12
+Polygon -16777216 true false 126 155 179 155 173 167 166 176 152 178 141 176 132 167 127 156
+Polygon -8630108 true false 119 45 179 15 179 45 118 14
+Circle -1 true false 118 198 8
+Circle -1 true false 108 220 2
+Circle -1 true false 182 200 8
+Circle -1 true false 202 225 2
+Circle -1 true false 209 133 8
+Circle -1 true false 230 130 2
+Circle -1 true false 90 133 8
+Circle -1 true false 72 127 2
+Circle -1 true false 150 71 2
+Circle -1 true false 147 93 8
 
 target
 false

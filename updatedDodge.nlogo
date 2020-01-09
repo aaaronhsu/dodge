@@ -81,9 +81,9 @@ to setup
   sound:play-note "Seashore" 60 64 1
 
   create-players 1 [
-    set shape "circle"
+    set shape "player"
     set color white
-    set size 1.5
+    set size 3
   ]
 
   set alive? true
@@ -108,7 +108,6 @@ to play
   ; death mechanism
   ifelse not alive? [
     clear-turtles
-    ask patches with [pcolor != black] [set pcolor black]
 
     if shopTab = "menu" [ menuTab ]
     if shopTab = "powerups" [ powerupTab ]
@@ -191,7 +190,7 @@ to play
       checkArrowDeath
 
       ; activation of obstacles
-      if random 150 < 1 and count bombs > 0 [
+      if random 100 < 1 and count bombs > 0 [
         bombActivate
       ]
 
@@ -210,6 +209,7 @@ to checkPlayerDeath
     if count neighbors with [count bullets-here > 0 or count bombs-here > 0] > 0 [
       set alive? false
       set shopTab "menu"
+      ask patches with [pcolor != black] [set pcolor black]
     ]
   ]
 end
@@ -295,6 +295,9 @@ end
 to genBullet
   create-bullets 1 [
     spawnRandomLocation
+
+    set shape "fish 1.1"
+    set size 2
     set fromBomb false
     set heading towards player 0
   ]
@@ -303,7 +306,7 @@ end
 to genBomb
   create-bombs 1 [
     set size 3
-    set shape "fish"
+    set shape "fish bowl (full)"
     spawnRandomLocation
 
     set heading towards player 0
@@ -313,8 +316,8 @@ end
 to genTurret
   create-turrets 1 [
     set bulletSpawnRate 1
-    set size 2
-    set shape "person"
+    set size 5
+    set shape "jellyfish"
     spawnRandomLocation
 
     set heading towardsxy mouse-xcor mouse-ycor
@@ -324,6 +327,8 @@ end
 to spawnBullet
   create-bullets 1 [
     set fromBomb true
+    set shape "fish 3"
+    set size 1.5
     setxy ([xcor] of one-of turrets) ([ycor] of one-of turrets)
     set heading towards player 0
   ]
@@ -345,7 +350,9 @@ to bombActivate
   [
     create-ordered-bullets 4 [
       set fromBomb true
-        setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
+      set shape "fish 2"
+      set size 1.5
+      setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
     ]
   ]
   [
@@ -353,12 +360,16 @@ to bombActivate
     [
       create-ordered-bullets 6 [
         set fromBomb true
+        set shape "fish 2"
+        set size 1.5
         setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
       ]
     ]
     [
       create-ordered-bullets 8 [
         set fromBomb true
+        set shape "fish 2"
+        set size 1.5
         setxy ([xcor] of one-of bombs) ([ycor] of one-of bombs)
       ]
     ]
@@ -503,6 +514,8 @@ to menuTab ;initial menu of shop
       setup
       clear-patches
       createLabels
+
+      set items pow2
     ]
   ]
 
