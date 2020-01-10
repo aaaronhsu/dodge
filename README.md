@@ -1,9 +1,12 @@
-TODO:
+TODO
+  Required additions
+    add option to change player skin
 
-implement more powerups (teleportation, slow down speed, clear screen, shield)
+    add option to have different backgrounds
 
-implement shop
+    add (some) sound effects
 
-implement turret enemy
+  Optional additions
+    fix bullet speed (too hard when score > 40)
 
-implement shapes
+    create first time startup menu with difficulty chooser (within the game)
