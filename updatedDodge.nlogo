@@ -13,7 +13,11 @@ globals [
   numArrows
   firstStartUp
   mouseClicked?
+  firstShop
+  level
 
+
+  backgroundColor
 
   up1
   up2
@@ -69,7 +73,14 @@ to setup
 
   if firstStartUp = 0 [ setupShop ]
   set firstStartUp 1
+  set backgroundColor 10
 
+  if difficulty = "easy" [ set level 1 ]
+  if difficulty = "medium" [ set level 3 ]
+  if difficulty = "hard" [ set level 5 ]
+  if difficulty = "expert" [ set level 7 ]
+
+  set firstShop 0
   set score 0
   set numArrows (pow1 * 3)
   set items pow2
@@ -101,6 +112,8 @@ to play
   createLabels
   if not mouse-down? [ set mouseClicked? false]
 
+  ask patches [ set pcolor backgroundColor ]
+
   every 2 [
     ;sound:play-note "muted electric guitar" 60 64 1
   ]
@@ -127,8 +140,12 @@ to play
   [
 
     ifelse score > 0
-    [ set bulletSpeed (sqrt(sqrt(score)) / 3) ]
+    [set bulletSpeed (sqrt(sqrt(score)) / 3)]
     [ set bulletSpeed 0.3 ]
+
+    if score > 40 [
+      set bulletSpeed (sqrt(sqrt(40))) / 3
+    ]
 
     ; creation of powerups
     createPowerup
@@ -138,14 +155,14 @@ to play
     checkItem
 
     ; creation of bullets and bombs
-    every spawnRate [
+    every spawnRate / level [
       genBullet
 
-      if random 3 < 1 and count bombs < 1 [
+      if random 7 - level < 1 and count bombs < 1 [
         genBomb
       ]
 
-      if random 7 < 1 and count turrets < 1 [
+      if random 10 - level < 1 and count turrets < 1 [
         genTurret
       ]
     ]
@@ -380,7 +397,7 @@ end
 
 to createPowerup
   if count patches with [pcolor = green] = 0 [
-    if random 8000 < 1 [
+    if random 20000 < 1 [
       ask one-of patches [
         set pcolor green
       ]
@@ -393,7 +410,7 @@ to checkPowerup
     ask neighbors [
       if count players-here > 0 [
         ask patches with [pcolor = green] [
-          set pcolor black
+          set pcolor backgroundColor
         ]
 
         set playerSpeed (playerSpeed * 1.2)
@@ -404,7 +421,7 @@ end
 
 to createItem
   if count patches with [pcolor = orange] = 0 [
-    if random 30000 < 1 [
+    if random 600000 < 1 [
       ask one-of patches [
         set pcolor orange
       ]
@@ -417,7 +434,7 @@ to checkItem
     ask neighbors [
       if count players-here > 0 [
         ask patches with [pcolor = orange] [
-          set pcolor black
+          set pcolor backgroundColor
         ]
 
         set items (items + 1)
@@ -476,7 +493,17 @@ to menuTab ;initial menu of shop
   ask patch -7 3 [set plabel "Upgrades"]
   ask patch -6 -3 [set plabel "Customize"]
   ask patch -6.6 -9 [set plabel "Powerups"]
-  ask patch 10 -3 [set plabel "Continue"]
+
+  if firstShop = 0 [
+    cro 1 [
+      set shape "jellyfish"
+      setxy 8 0
+      set size 5
+    ]
+    print "hello"
+    set firstShop 1
+  ]
+  ask patch 10 -8 [set plabel "Continue"]
 
   if mouse-down? and not mouseClicked? [
     if mouse-xcor > -14.8 and
@@ -486,6 +513,7 @@ to menuTab ;initial menu of shop
       set shopTab "upgrades"
       clear-patches
       createLabels
+      set firstShop 0
     ]
 
     if mouse-xcor > -14.8 and
@@ -495,6 +523,7 @@ to menuTab ;initial menu of shop
       set shopTab "backgrounds"
       clear-patches
       createLabels
+      set firstShop 0
     ]
 
     if mouse-xcor > -15 and
@@ -504,18 +533,18 @@ to menuTab ;initial menu of shop
       set shopTab "powerups"
       clear-patches
       createLabels
+      set firstShop 0
     ]
 
     if mouse-xcor > 2.5 and
     mouse-xcor < 10.5 and
-    mouse-ycor < -2 and
-    mouse-ycor > -3.8 and
+    mouse-ycor < -7 and
+    mouse-ycor > -8.8 and
     shopTab = "menu" [
       setup
       clear-patches
       createLabels
-
-      set items pow2
+      set firstShop 0
     ]
   ]
 
@@ -771,6 +800,16 @@ mouse-ycor
 17
 1
 11
+
+CHOOSER
+46
+242
+184
+287
+difficulty
+difficulty
+"easy" "medium" "hard" "expert"
+3
 
 @#$#@#$#@
 ## WHAT IS IT?
