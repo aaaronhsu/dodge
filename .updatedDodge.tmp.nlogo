@@ -359,7 +359,7 @@ to genArrow
   if numArrows > 0 [
     set numArrows (numArrows - 1)
     create-arrows 1 [
-      set shape "ship anchor"
+      set shape ""
       setxy ([xcor] of player 0) ([ycor] of player 0)
       set heading towardsxy mouse-xcor mouse-ycor
       set contact false
@@ -453,7 +453,6 @@ to useItem
     sound:play-note "gunshot" 60 64 1
     set items (items - 1)
     create-ordered-arrows 15 + (pow3 * 2) [
-      set shape "ship anchor"
       set contact false
       setxy ([xcor] of player 0) ([ycor] of player 0)
     ]
