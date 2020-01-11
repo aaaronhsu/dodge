@@ -16,6 +16,8 @@ globals [
   firstShop
   level
 
+  purchased
+
 
   backgroundColor
 
@@ -68,36 +70,41 @@ end
 
 to setup
   set mouseClicked? true
-  clear-turtles
   clear-patches
 
-  if firstStartUp = 0 [ setupShop ]
-  set firstStartUp 1
-  set backgroundColor 10
-
-  if difficulty = "easy" [ set level 1 ]
-  if difficulty = "medium" [ set level 3 ]
-  if difficulty = "hard" [ set level 5 ]
-  if difficulty = "expert" [ set level 7 ]
-
-  set firstShop 0
-  set score 0
-  set numArrows (pow1 * 3)
-  set items pow2
-  set bulletSpeed 1
-  set spawnRate 3
-  set playerSpeed .2 + (up1 * .008)
-  set arrowSpeed playerSpeed - (up1 * .008)
-  set shopTab "menu"
-  sound:play-note "Seashore" 60 64 1
-
-  create-players 1 [
-    set shape "player"
-    set color white
-    set size 3
+  ifelse firstStartUp = 0
+  [
+    setupShop
+    set firstStartUp 1
+    ask patches [ set pcolor white ]
   ]
 
-  set alive? true
+  [
+    ask patches [set pcolor blue - 2]
+
+    if difficulty = "easy" [ set level 1 ]
+    if difficulty = "medium" [ set level 3 ]
+    if difficulty = "hard" [ set level 5 ]
+    if difficulty = "expert" [ set level 7 ]
+
+    set firstShop 0
+    set score 0
+    set numArrows (pow1 * 3)
+    set items pow2
+    set bulletSpeed 1
+    set spawnRate 3
+    set playerSpeed .2 + (up1 * .008)
+    set arrowSpeed playerSpeed - (up1 * .008)
+    set shopTab "menu"
+    sound:play-note "Seashore" 60 64 1
+
+    set alive? true
+    create-players 1 [
+      set shape "player"
+      set color white
+      set size 3
+    ]
+  ]
 end
 
 to setupShop
@@ -112,15 +119,9 @@ to play
   createLabels
   if not mouse-down? [ set mouseClicked? false]
 
-  ask patches [ set pcolor backgroundColor ]
-
-  every 2 [
-    ;sound:play-note "muted electric guitar" 60 64 1
-  ]
-
   ; death mechanism
   ifelse not alive? [
-    clear-turtles
+    ask patches [ set pcolor blue - 2 ]
 
     if shopTab = "menu" [ menuTab ]
     if shopTab = "powerups" [ powerupTab ]
@@ -156,23 +157,28 @@ to play
 
     ; creation of bullets and bombs
     every spawnRate / level [
-      genBullet
 
-      if random 7 - level < 1 and count bombs < 1 [
-        genBomb
-      ]
+      if count players > 0 [
+        genBullet
 
-      if random 10 - level < 1 and count turrets < 1 [
-        genTurret
+        if random 7 - level < 1 and count bombs < 1 [
+          genBomb
+        ]
+
+        if random 10 - level < 1 and count turrets < 1 [
+          genTurret
+        ]
       ]
     ]
 
 
     ; movement of ALL entities
     every .03 [
-      ask player 0 [
-        set heading towardsxy mouse-xcor mouse-ycor
-        fd playerSpeed
+      if count players > 0 [
+        ask player 0 [
+          set heading towardsxy mouse-xcor mouse-ycor
+          fd playerSpeed
+        ]
       ]
 
       ask bullets [
@@ -229,6 +235,8 @@ to checkPlayerDeath
       ask patches with [pcolor != black] [set pcolor black]
     ]
   ]
+
+  if not alive? [ clear-turtles ]
 end
 
 to checkBulletDeath
@@ -410,7 +418,7 @@ to checkPowerup
     ask neighbors [
       if count players-here > 0 [
         ask patches with [pcolor = green] [
-          set pcolor backgroundColor
+          set pcolor blue - 2
         ]
 
         set playerSpeed (playerSpeed * 1.2)
@@ -434,7 +442,7 @@ to checkItem
     ask neighbors [
       if count players-here > 0 [
         ask patches with [pcolor = orange] [
-          set pcolor backgroundColor
+          set pcolor blue - 2
         ]
 
         set items (items + 1)
@@ -512,6 +520,7 @@ to menuTab ;initial menu of shop
     mouse-ycor > 2.2 [
       set shopTab "upgrades"
       clear-patches
+      clear-turtles
       createLabels
       set firstShop 0
     ]
@@ -522,6 +531,7 @@ to menuTab ;initial menu of shop
     mouse-ycor > -3.5 [
       set shopTab "backgrounds"
       clear-patches
+      clear-turtles
       createLabels
       set firstShop 0
     ]
@@ -532,6 +542,7 @@ to menuTab ;initial menu of shop
     mouse-ycor > -9.7 [
       set shopTab "powerups"
       clear-patches
+      clear-turtles
       createLabels
       set firstShop 0
     ]
@@ -543,8 +554,10 @@ to menuTab ;initial menu of shop
     shopTab = "menu" [
       setup
       clear-patches
+      clear-turtles
       createLabels
       set firstShop 0
+
     ]
   ]
 
@@ -741,10 +754,10 @@ NIL
 1
 
 MONITOR
-132
-196
-189
-241
+314
+23
+371
+68
 items
 rItems
 17
@@ -752,10 +765,10 @@ rItems
 11
 
 MONITOR
-45
-195
-102
-240
+227
+22
+284
+67
 arrows
 numArrows
 17
@@ -802,14 +815,14 @@ mouse-ycor
 11
 
 CHOOSER
-46
-242
-184
-287
+73
+171
+211
+216
 difficulty
 difficulty
 "easy" "medium" "hard" "expert"
-3
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
