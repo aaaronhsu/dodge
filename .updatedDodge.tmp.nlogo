@@ -75,12 +75,25 @@ to setup
   ifelse firstStartUp = 0
   [
     set firstStartUp 1
-    ask patches [ set pcolor white ]
+    ask patches [ set pcolor 123 ]
     set currentPlayer "player"
+
+    ask patch 10 9 [set plabel "Welcome to the Reef"]
+
+    ask patch 14 4 [set plabel "Dodge as many fish as you can!"]
+
+    cro 1 [
+      set shape "octopus"
+      set size 15
+      setxy 0 -8
+    ]
+
   ]
 
   [
     ask patches [set pcolor blue - 2]
+
+    clear-turtles
 
     if difficulty = "easy" [ set level 1 ]
     if difficulty = "medium" [ set level 3 ]
@@ -101,7 +114,7 @@ to setup
     create-players 1 [
       set shape currentPlayer
       set color white
-      set size 3
+      set size 4
     ]
 
     set alive? true
@@ -139,6 +152,8 @@ to play
     ifelse score > 0
     [set bulletSpeed (sqrt(sqrt(score)) / 3)]
     [ set bulletSpeed 0.3 ]
+
+    set bulletSpeed (0.3 + (score * 0.0))
 
     if score > 40 [
       set bulletSpeed (sqrt(sqrt(40))) / 3
@@ -359,7 +374,8 @@ to genArrow
   if numArrows > 0 [
     set numArrows (numArrows - 1)
     create-arrows 1 [
-      set shape ""
+      set shape "ship anchor"
+      set size 2.5
       setxy ([xcor] of player 0) ([ycor] of player 0)
       set heading towardsxy mouse-xcor mouse-ycor
       set contact false
@@ -426,7 +442,7 @@ end
 
 to createItem
   if count patches with [pcolor = orange] = 0 [
-    if random 600000 < 1 [
+    if random 40000 < 1 [
       ask one-of patches [
         set pcolor orange
       ]
@@ -450,9 +466,10 @@ end
 
 to useItem
   if items > 0 [
-    sound:play-note "gunshot" 60 64 1
     set items (items - 1)
     create-ordered-arrows 15 + (pow3 * 2) [
+      set shape "ship anchor"
+      set size 2.5
       set contact false
       setxy ([xcor] of player 0) ([ycor] of player 0)
     ]
