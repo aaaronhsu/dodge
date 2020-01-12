@@ -123,6 +123,107 @@ to setup
   print items
 end
 
+to demo
+  createLabels
+  if not mouse-down? [ set mouseClicked? false]
+
+  ; death mechanism
+  ifelse not alive?
+  [
+    ask patches [ set pcolor blue - 2 ]
+
+    if shopTab = "menu" [ menuTab ]
+    if shopTab = "powerups" [ powerupTab ]
+    if shopTab = "upgrades" [ upgradeTab ]
+    if shopTab = "backgrounds" [ backgroundTab ]
+
+
+    if highScore < score [
+      set highScore score
+    ]
+    set score 0
+    set items 0
+    set numArrows 0
+  ]
+
+
+  [
+
+    ifelse score > 0
+    [set bulletSpeed (sqrt(sqrt(score)) / 3)]
+    [ set bulletSpeed 0.3 ]
+
+    set bulletSpeed (0.3 + (score * 0.01))
+
+    if score > 40 [
+      set bulletSpeed (sqrt(sqrt(40))) / 3
+    ]
+
+    ; creation of powerups
+    createPowerup
+    checkPowerup
+
+    createItem
+    checkItem
+
+    ; creation of bullets and bombs
+
+
+    ; movement of ALL entities
+    every .03 [
+      if count players > 0 [
+        ask player 0 [
+          set heading towardsxy mouse-xcor mouse-ycor
+          fd playerSpeed
+        ]
+      ]
+
+      ask bullets [
+        fd bulletSpeed
+        set lifetime (lifetime + 1)
+      ]
+      ask bombs [
+        fd bulletSpeed
+        set lifetime (lifetime + 1)
+      ]
+      ask arrows [
+        set arrowSpeed playerSpeed * 2
+        fd arrowSpeed
+      ]
+      ask turrets [
+        fd bulletSpeed / 2
+        set lifetime (lifetime + 1)
+      ]
+
+      ; gives arrows to player
+      every 3 [
+        if numArrows < 10 + up2 [
+          set numArrows (numArrows + 1)
+        ]
+      ]
+
+      ; check death of ALL entities
+      checkPlayerDeath
+      checkBulletDeath
+      checkTurretDeath
+      checkBombDeath
+      checkArrowDeath
+
+      ; activation of obstacles
+      if random 100 < 1 and count bombs > 0 [
+        bombActivate
+      ]
+
+      if count turrets > 0 [
+        every bulletSpawnRate [
+          spawnBullet
+        ]
+      ]
+    ]
+
+  ]
+end
+
 to play
   createLabels
   if not mouse-down? [ set mouseClicked? false]
@@ -375,7 +476,7 @@ to genArrow
     set numArrows (numArrows - 1)
     create-arrows 1 [
       set shape "ship anchor"
-      set size 2.5
+      set size 1.5
       setxy ([xcor] of player 0) ([ycor] of player 0)
       set heading towardsxy mouse-xcor mouse-ycor
       set contact false
@@ -836,45 +937,6 @@ numArrows
 1
 11
 
-BUTTON
-49
-291
-166
-324
-mouse
-if mouse-down? [\nprint mouse-xcor\nprint mouse-ycor\n]
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-MONITOR
-28
-350
-144
-395
-NIL
-mouse-xcor
-17
-1
-11
-
-MONITOR
-29
-413
-107
-458
-NIL
-mouse-ycor
-17
-1
-11
-
 CHOOSER
 73
 171
@@ -883,6 +945,74 @@ CHOOSER
 difficulty
 difficulty
 "easy" "medium" "hard" "expert"
+1
+
+BUTTON
+33
+258
+96
+291
+NIL
+demo
+T
+1
+T
+OBSERVER
+NIL
+F
+NIL
+NIL
+1
+
+BUTTON
+30
+313
+112
+346
+fish
+genBullet
+NIL
+1
+T
+OBSERVER
+NIL
+A
+NIL
+NIL
+1
+
+BUTTON
+31
+361
+113
+394
+fishbowl
+genBomb
+NIL
+1
+T
+OBSERVER
+NIL
+S
+NIL
+NIL
+1
+
+BUTTON
+29
+412
+116
+445
+jellyfish
+genTurret
+NIL
+1
+T
+OBSERVER
+NIL
+D
+NIL
+NIL
 1
 
 @#$#@#$#@
