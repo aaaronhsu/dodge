@@ -87,7 +87,6 @@ to setup
       set size 15
       setxy 0 -8
     ]
-
   ]
 
   [
@@ -339,12 +338,15 @@ to play
   ]
 end
 
+
+
+
+; checks death of all entities
 to checkPlayerDeath
   ask players [
     if count neighbors with [count bullets-here > 0 or count bombs-here > 0] > 0 [
       set alive? false
       set shopTab "menu"
-      ask patches with [pcolor != black] [set pcolor black]
     ]
   ]
 
@@ -429,6 +431,10 @@ to checkArrowDeath
   ]
 end
 
+
+
+
+; creates entities
 to genBullet
   create-bullets 1 [
     spawnRandomLocation
@@ -484,6 +490,9 @@ to genArrow
   ]
 end
 
+
+
+; activates bomb based on score (more fish if higher score)
 to bombActivate
   ifelse score < 10
   [
@@ -517,6 +526,10 @@ to bombActivate
   ask bombs [ die ]
 end
 
+
+
+
+; creation and usage of patch benefits
 to createPowerup
   if count patches with [pcolor = green] = 0 [
     if random 20000 < 1 [
@@ -540,6 +553,8 @@ to checkPowerup
     ]
   ]
 end
+
+
 
 to createItem
   if count patches with [pcolor = orange] = 0 [
@@ -603,15 +618,15 @@ to createLabels
 ;  ask patch -8 15 [set plabel word "Money: " money]
 end
 
-;shop option spacing: (((max-pycor * 2) + 1) / 5)
-;
 
+
+; shop
 to clearOptions
   ask patches with [pycor > ((max-pycor - (4 * (((max-pycor * 2) + 1) / 5))) - 1) and pycor < ((max-pycor - (2 * (((max-pycor * 2) + 1) / 5))) + 1)]
           [set plabel " "]
 end
 
-to menuTab ;initial menu of shop
+to menuTab
   ask patch 2 8 [set plabel "Shop"]
   ask patch -7 3 [set plabel "Upgrades"]
   ask patch -6 -3 [set plabel "Customize"]
@@ -1018,39 +1033,33 @@ NIL
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+A simple dodging game controlled by the mouse that has an ocean theme.
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+There are 5 breeds in the game. The player follows the mouse and tries to dodge fish that are spawned randomly, moving towards the player. Fishbowls are similar to fish, but at any given time, they could explode, creating more fish. Jellyfish are also similar to fish, but they spawn a new fish that moves towards the player every 2 seconds. Arrows are the player's weapon to destroying these enemies.
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+To use the model, press setup twice and press play. The rest of the game is controlled by the mouse. Use the mouse to control the player and attempt to dodge all incoming projectiles. 
+
+If the user presses play before pressing setup twice, the game will crash and the user must type 'ca' into the console and restart.
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
+Notice that patches may turn green or orange randomly as the game is run. If the user steps on these patches, they get powerups. Green corresponds to an increase in player speed while orange credits the player 1 item.
 
 ## THINGS TO TRY
 
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+The user can try using items by pressing x. The shop at the end of every round is interactive and is a place where the user can spend thier money for upgrades. Also, difficulty can be changed using the chooser.
 
 ## EXTENDING THE MODEL
 
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
+To extend the model, the shop can be filled with many more upgrades, and different gamemodes can be implement. For example, a survival game can be made by implementing a wave system so instead of having an endless game, the player tries to stay alive for as many 'waves' as they can.
 
-## NETLOGO FEATURES
+## BUGS
 
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
-
-## RELATED MODELS
-
-(models in the NetLogo Models Library and elsewhere which are of related interest)
-
-## CREDITS AND REFERENCES
-
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+There is a known bug where items and arrows will not be credited at the start of each round when the user presses 'continue'. This can be fixed by calling setup instead of 'continue'
 @#$#@#$#@
 default
 true
