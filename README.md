@@ -13,8 +13,8 @@ Green patches will increase the player's base speed.
 
 The longer you can last without dying, the more money you earn, which can be spent on items, cosmetics, and improving stats.
 
-## HOW TO USE IT
-To use the model, press setup twice and press play. The rest of the game is controlled by the mouse (the player will move towards the cursor). 
+## How to Use
+To use the model open `dodge.nlogo` and press setup twice. Then press play. The rest of the game is controlled by the mouse (the player will move towards the cursor). 
 If the user presses play before pressing setup twice, the game will crash and the user must type ‘ca’ into the console and restart.
 
 ## Bugs
