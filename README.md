@@ -21,6 +21,6 @@ If the user presses play before pressing setup twice, the game will crash and th
 * Additional items and arrows will not be credited at the start of each round
 
 ## Contributors
-* [Aaron Hsu] (https://github.com/chicknmilk)
+* [Aaron Hsu](https://github.com/chicknmilk)
 * [Sarah Leong](https://github.com/MinekiNeko19)
 * [Loy Hashimoto](https://github.com/LoySpoons)
